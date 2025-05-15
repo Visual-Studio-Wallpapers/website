@@ -35,13 +35,15 @@ title: Phone Wallpapers
         <div class="preview-layout">
             <div class="preview-image-container">
                 <img id="previewImage" src="" alt="Wallpaper Preview">
-            </div>
-            <div class="preview-sidebar">
+            </div>            <div class="preview-sidebar">
                 <h3>Download Options</h3>
-                <div class="size-buttons preview-sizes">
-                    {% for size in site.data.sizes.phone %}
-                        <a href="#" class="button size-button" data-size="{{ size }}">Download {{ size }}</a>
-                    {% endfor %}
+                <div class="preview-sizes">
+                    <select id="sizeSelector" class="size-selector">
+                        {% for size in site.data.sizes.phone %}
+                            <option value="{{ size }}">{{ size }}</option>
+                        {% endfor %}
+                    </select>
+                    <a href="#" id="downloadButton" class="button download-button">Download</a>
                 </div>
                 <div class="preview-settings">
                     <label class="checkbox-label">
@@ -108,9 +110,15 @@ title: Phone Wallpapers
 .preview-image-container img {
     width: 100%;
     height: auto;
-    max-height: 85vh;
+    max-height: 400px;
     object-fit: contain;
     border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+    .preview-image-container img {
+        max-height: 85vh;
+    }
 }
 
 .preview-sidebar {
@@ -143,9 +151,31 @@ title: Phone Wallpapers
 .preview-sizes {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 1rem;
 }
+
+.size-selector {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%;
+    background-color: white;
+}
+
+.download-button {
+    width: 100%;
+    text-align: center;
+    background-color: var(--primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+
 
 .preview-settings {
     margin-bottom: 1.5rem;
@@ -189,6 +219,27 @@ title: Phone Wallpapers
 .card {
     cursor: pointer;
     transition: transform 0.2s;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+    .card {
+        max-width: 180px;
+    }
+    
+    .image-container {
+        border-radius: 12px 12px 0 0;
+    }
+    
+    .card-content {
+        padding: 0.75rem;
+    }
+    
+    .hint {
+        font-size: 0.8rem;
+    }
 }
 
 .card:hover {
@@ -218,6 +269,20 @@ title: Phone Wallpapers
     color: #666;
     font-size: 0.9rem;
     opacity: 0.8;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2rem;
+    }
 }
 </style>
 
@@ -270,6 +335,38 @@ function showPreviewModal(image) {
     
     // Apply current preference
     updateDownloadButtons();
+    
+    const sizeSelector = document.getElementById('sizeSelector');
+    const downloadButton = document.getElementById('downloadButton');
+    const openInNewWindow = document.getElementById('openInNewWindow');
+
+    // Set preview image
+    previewImage.src = `wallpapers/phone/${sizeSelector.value}/${image}`;
+    modal.style.display = 'flex';
+
+    // Update download button URL when size changes
+    sizeSelector.onchange = function() {
+        previewImage.src = `wallpapers/phone/${sizeSelector.value}/${image}`;
+        updateDownloadUrl();
+    };
+
+    // Update download URL when checkbox changes
+    openInNewWindow.onchange = updateDownloadUrl;
+
+    // Initial download URL setup
+    updateDownloadUrl();    function updateDownloadUrl() {
+        const selectedSize = sizeSelector.value;
+        const url = `{{ site.baseurl }}/wallpapers/phone/${selectedSize}/${image}`;
+        downloadButton.href = url;
+        if (openInNewWindow.checked) {
+            downloadButton.target = '_blank';
+            downloadButton.removeAttribute('download');
+        } else {
+            downloadButton.removeAttribute('target');
+            const filename = `phone_${selectedSize}_${image}`;
+            downloadButton.setAttribute('download', filename);
+        }
+    }
 }
 
 function hidePreviewModal() {

@@ -106,9 +106,15 @@ title: Desktop Wallpapers
 .preview-image-container img {
     width: 100%;
     height: auto;
-    max-height: 85vh;
+    max-height: 500px;
     object-fit: contain;
     border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+    .preview-image-container img {
+        max-height: 95vh;
+    }
 }
 
 .preview-sidebar {

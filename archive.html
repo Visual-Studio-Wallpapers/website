@@ -152,9 +152,15 @@ title: Community Archive
 .preview-image-container img {
     width: 100%;
     height: auto;
-    max-height: 85vh;
+    max-height: 400px;
     object-fit: contain;
     border-radius: 8px;
+}
+
+@media (min-width: 768px) {
+    .preview-image-container img {
+        max-height: 85vh;
+    }
 }
 
 .preview-sidebar {
