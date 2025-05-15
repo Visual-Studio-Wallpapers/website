@@ -32,11 +32,14 @@ title: Phone Wallpapers
 </div>
 
 <div id="previewModal" class="modal">
+    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
+    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
     <div class="modal-content preview-content">
         <div class="preview-layout">
             <div class="preview-image-container">
                 <img id="previewImage" src="" alt="Wallpaper Preview">
-            </div>            <div class="preview-sidebar">
+            </div>
+            <div class="preview-sidebar">
                 <h3>Download Options</h3>
                 <div class="preview-sizes">
                     <select id="sizeSelector" class="size-selector">
@@ -100,6 +103,7 @@ title: Phone Wallpapers
     gap: 2rem;
     align-items: flex-start;
     flex-direction: column;
+    position: relative;
 }
 
 .preview-image-container {
@@ -285,6 +289,53 @@ title: Phone Wallpapers
         gap: 2rem;
     }
 }
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
+@media (max-width: 768px) {
+    .nav-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+    
+    .prev-arrow {
+        left: 10px;
+    }
+    
+    .next-arrow {
+        right: 10px;
+    }
+}
 </style>
 
 <script>
@@ -404,6 +455,56 @@ document.addEventListener('click', function(event) {
         hideModal();
     } else if (event.target === previewModal) {
         hidePreviewModal();
+    }
+});
+
+let currentWallpaperIndex = 0;
+const wallpapers = [];
+
+// Preload wallpapers for navigation
+function preloadWallpapers() {
+    const size = document.getElementById('sizeSelector').value;
+    const baseUrl = `{{ site.baseurl }}/wallpapers/phone/${size}/`;
+    {% for image in site.static_files %}
+    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            
+    wallpapers.push('{{ image.basename }}{{ image.extname }}');
+    {% endif %}
+    {% endfor %}
+}
+
+function showNextWallpaper() {
+    currentWallpaperIndex = (currentWallpaperIndex + 1) % wallpapers.length;
+    updatePreviewImage();
+}
+
+function showPreviousWallpaper() {
+    currentWallpaperIndex = (currentWallpaperIndex - 1 + wallpapers.length) % wallpapers.length;
+    updatePreviewImage();
+}
+
+function updatePreviewImage() {
+    const previewImage = document.getElementById('previewImage');
+    const newImage = wallpapers[currentWallpaperIndex];
+    const size = document.getElementById('sizeSelector').value;
+    previewImage.src = `wallpapers/phone/${size}/${newImage}`;
+    currentImage = newImage;
+    updateDownloadUrl();
+}
+
+// Initialize wallpaper preloading and setup keyboard navigation
+preloadWallpapers();
+
+// Add keyboard navigation
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('previewModal');
+    if (modal.style.display === 'flex') {
+        if (event.key === 'ArrowLeft' || event.key === 'a') {
+            showPreviousWallpaper();
+        } else if (event.key === 'ArrowRight' || event.key === 'd') {
+            showNextWallpaper();
+        } else if (event.key === 'Escape') {
+            hidePreviewModal();
+        }
     }
 });
 </script>

@@ -9,7 +9,7 @@ title: Community Archive
     This is an archived collection preserved for historical purposes.</p>
 </div>
 
-{% assign total_items = 138 %}
+{% assign total_items = 137 %}
 
 <div id="wallpaperGrid" class="grid">
 </div>
@@ -21,6 +21,8 @@ title: Community Archive
 </div>
 
 <div id="previewModal" class="modal">
+    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
+    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
     <div class="modal-content preview-content">
         <div class="preview-layout">
             <div class="preview-image-container">
@@ -263,20 +265,58 @@ title: Community Archive
     border-color: var(--primary);
 }
 
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
 @media (max-width: 768px) {
-    .page-buttons {
-        gap: 0.25rem;
+    .nav-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
     }
     
-    .page-button {
-        padding: 0.25rem 0.75rem;
-        font-size: 0.9rem;
+    .prev-arrow {
+        left: 10px;
+    }
+    
+    .next-arrow {
+        right: 10px;
     }
 }
+
 </style>
 
 <script>
 var currentImage = '';
+var currentWallpaperIndex = 0;
 var ITEMS_PER_PAGE = 30;
 var TOTAL_ITEMS = {{ total_items }};
 var TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
@@ -380,6 +420,7 @@ window.addEventListener('popstate', updatePageContent);
 
 function showPreviewModal(image) {
     currentImage = image;
+    currentWallpaperIndex = parseInt(image.match(/(\d+)/)[1]) - 1;
     const previewImage = document.getElementById('previewImage');
     previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
     const modal = document.getElementById('previewModal');
@@ -429,6 +470,36 @@ document.addEventListener('click', function(event) {
     const previewModal = document.getElementById('previewModal');
     if (event.target === previewModal) {
         hidePreviewModal();
+    }
+});
+
+function showPreviousWallpaper() {
+    if (currentWallpaperIndex > 0) {
+        currentWallpaperIndex--;
+        const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
+        showPreviewModal(`${paddedIndex}.jpg`);
+    }
+}
+
+function showNextWallpaper() {
+    if (currentWallpaperIndex < TOTAL_ITEMS - 1) {
+        currentWallpaperIndex++;
+        const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
+        showPreviewModal(`${paddedIndex}.jpg`);
+    }
+}
+
+// Add keyboard navigation
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('previewModal');
+    if (modal.style.display === 'flex') {
+        if (event.key === 'ArrowLeft' || event.key === 'a') {
+            showPreviousWallpaper();
+        } else if (event.key === 'ArrowRight' || event.key === 'd') {
+            showNextWallpaper();
+        } else if (event.key === 'Escape') {
+            hidePreviewModal();
+        }
     }
 });
 </script>

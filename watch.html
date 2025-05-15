@@ -20,9 +20,11 @@ title: Watch Wallpapers
 <div id="previewModal" class="modal">
     <div class="modal-content preview-content">
         <div class="preview-layout">
+            <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
             <div class="preview-image-container">
                 <img id="previewImage" src="" alt="Wallpaper Preview">
             </div>
+            <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
             <div class="preview-sidebar">
                 <h3>Download Options</h3>
                 <div class="size-buttons preview-sizes">
@@ -221,6 +223,53 @@ title: Watch Wallpapers
     font-size: 0.9rem;
     opacity: 0.8;
 }
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
+@media (max-width: 768px) {
+    .nav-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+    
+    .prev-arrow {
+        left: 10px;
+    }
+    
+    .next-arrow {
+        right: 10px;
+    }
+}
 </style>
 
 <script>
@@ -234,6 +283,16 @@ openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; /
 openInNewWindow.addEventListener('change', function() {
     localStorage.setItem('openInNewWindow', this.checked);
     updateDownloadButtons();
+});
+
+// Array to store all wallpapers
+let wallpapers = [];
+let currentWallpaperIndex = 0;
+
+// Initialize wallpapers array when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    wallpapers = Array.from(document.querySelectorAll('.card'))
+        .map(card => card.querySelector('img').src.split('/').pop());
 });
 
 function updateDownloadButtons() {
@@ -255,6 +314,7 @@ function updateDownloadButtons() {
 
 function showPreviewModal(image) {
     currentImage = image;
+    currentWallpaperIndex = wallpapers.indexOf(image);
     const previewImage = document.getElementById('previewImage');
     previewImage.src = `{{ site.baseurl }}/wallpapers/watch/368x448/${image}`;
     const modal = document.getElementById('previewModal');
@@ -283,6 +343,30 @@ document.addEventListener('click', function(event) {
     const previewModal = document.getElementById('previewModal');
     if (event.target === previewModal) {
         hidePreviewModal();
+    }
+});
+
+function showPreviousWallpaper() {
+    currentWallpaperIndex = (currentWallpaperIndex - 1 + wallpapers.length) % wallpapers.length;
+    showPreviewModal(wallpapers[currentWallpaperIndex]);
+}
+
+function showNextWallpaper() {
+    currentWallpaperIndex = (currentWallpaperIndex + 1) % wallpapers.length;
+    showPreviewModal(wallpapers[currentWallpaperIndex]);
+}
+
+// Add keyboard navigation
+document.addEventListener('keydown', function(event) {
+    const modal = document.getElementById('previewModal');
+    if (modal.style.display === 'flex') {
+        if (event.key === 'ArrowLeft' || event.key === 'a') {
+            showPreviousWallpaper();
+        } else if (event.key === 'ArrowRight' || event.key === 'd') {
+            showNextWallpaper();
+        } else if (event.key === 'Escape') {
+            hidePreviewModal();
+        }
     }
 });
 </script>
