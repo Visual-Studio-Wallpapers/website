@@ -9,18 +9,15 @@ title: Community Archive
     This is an archived collection preserved for historical purposes.</p>
 </div>
 
-<div class="grid">
-    {% for i in (1..138) %}
-        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}        
-        <div class="wallpaper-item" onclick="showPreviewModal('{{ padded_i }}.jpg')">
-            <div class="image-container">                
-                <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/{{ padded_i }}.jpg" 
-                     alt="Archive Wallpaper {{ padded_i }}">
-            </div>              <div class="card-content">
-                <span class="hint">Click to preview</span>
-            </div>
-        </div>
-    {% endfor %}
+{% assign total_items = 138 %}
+
+<div id="wallpaperGrid" class="grid">
+</div>
+
+<div class="pagination-controls">
+    <span id="pageInfo" class="page-info"></span>
+    <div id="pageButtons" class="page-buttons">
+    </div>
 </div>
 
 <div id="previewModal" class="modal">
@@ -76,6 +73,7 @@ title: Community Archive
     border-radius: 15px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: transform 0.2s;
+    cursor: pointer;
 }
 
 .wallpaper-item:hover {
@@ -220,10 +218,184 @@ title: Community Archive
     font-size: 0.9rem;
     opacity: 0.8;
 }
+
+.pagination-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.page-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.page-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.page-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #333;
+    background: #fff;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.page-button:hover {
+    background: #f5f5f5;
+}
+
+.page-button.current {
+    background: #17a2b8;
+    color: #fff;
+    border-color: #17a2b8;
+}
+
+@media (max-width: 768px) {
+    .page-buttons {
+        gap: 0.25rem;
+    }
+    
+    .page-button {
+        padding: 0.25rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
 </style>
 
 <script>
-let currentImage = '';
+var currentImage = '';
+var ITEMS_PER_PAGE = 30;
+var TOTAL_ITEMS = {{ total_items }};
+var TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
+
+function getCurrentPage() {
+    const params = new URLSearchParams(window.location.search);
+    let page = parseInt(params.get('page')) || 1;
+    if (page < 1) page = 1;
+    if (page > TOTAL_PAGES) page = TOTAL_PAGES;
+    return page;
+}
+
+function updatePageContent() {
+    const currentPage = getCurrentPage();
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    let end = offset + ITEMS_PER_PAGE;
+    if (end > TOTAL_ITEMS) end = TOTAL_ITEMS;
+
+    // Update grid content
+    const grid = document.getElementById('wallpaperGrid');
+    grid.innerHTML = '';
+    
+    for (let i = offset; i < end; i++) {
+        const actualI = i + 1;
+        const paddedI = String(actualI).padStart(3, '0');
+        const wallpaperItem = document.createElement('div');
+        wallpaperItem.className = 'wallpaper-item';
+        wallpaperItem.onclick = () => showPreviewModal(`${paddedI}.jpg`);
+        
+        wallpaperItem.innerHTML = `
+            <div class="image-container">                
+                <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/${paddedI}.jpg" 
+                     alt="Archive Wallpaper ${paddedI}">
+            </div>
+            <div class="card-content">
+                <span class="hint">Click to preview</span>
+            </div>
+        `;
+        grid.appendChild(wallpaperItem);
+    }
+
+    // Update pagination info
+    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${TOTAL_PAGES}`;
+    
+    // Update pagination buttons
+    const pageButtons = document.getElementById('pageButtons');
+    pageButtons.innerHTML = '';
+    
+    if (currentPage > 1) {
+        const prevButton = document.createElement('a');
+        prevButton.href = '#';
+        prevButton.className = 'page-button';
+        prevButton.innerHTML = '&laquo; Previous';
+        prevButton.onclick = (e) => {
+            e.preventDefault();
+            navigateToPage(currentPage - 1);
+        };
+        pageButtons.appendChild(prevButton);
+    }
+    
+    for (let i = 1; i <= TOTAL_PAGES; i++) {
+        const pageButton = document.createElement(i === currentPage ? 'span' : 'a');
+        pageButton.className = `page-button${i === currentPage ? ' current' : ''}`;
+        if (i !== currentPage) {
+            pageButton.href = '#';
+            pageButton.onclick = (e) => {
+                e.preventDefault();
+                navigateToPage(i);
+            };
+        }
+        pageButton.textContent = i;
+        pageButtons.appendChild(pageButton);
+    }
+    
+    if (currentPage < TOTAL_PAGES) {
+        const nextButton = document.createElement('a');
+        nextButton.href = '#';
+        nextButton.className = 'page-button';
+        nextButton.innerHTML = 'Next &raquo;';
+        nextButton.onclick = (e) => {
+            e.preventDefault();
+            navigateToPage(currentPage + 1);
+        };
+        pageButtons.appendChild(nextButton);
+    }
+}
+
+function navigateToPage(page) {
+    const url = new URL(window.location);
+    url.searchParams.set('page', page);
+    window.history.pushState({}, '', url);
+    updatePageContent();
+    window.scrollTo(0, 0);
+}
+
+// Initialize page content when the page loads
+document.addEventListener('DOMContentLoaded', updatePageContent);
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', updatePageContent);
+
+function showPreviewModal(image) {
+    currentImage = image;
+    const previewImage = document.getElementById('previewImage');
+    previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'flex';
+    
+    // Setup download button
+    const downloadButton = modal.querySelector('.size-button');
+    downloadButton.href = `{{ site.baseurl }}/wallpapers/archive/${currentImage}`;
+    downloadButton.removeAttribute('download');
+    
+    // Apply current preference
+    updateDownloadButtons();
+}
+
+function hidePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'none';
+}
 
 // Load user preference for opening in new window
 const openInNewWindow = document.getElementById('openInNewWindow');
@@ -248,27 +420,6 @@ function updateDownloadButtons() {
             button.setAttribute('download', currentImage);
         }
     });
-}
-
-function showPreviewModal(image) {
-    currentImage = image;
-    const previewImage = document.getElementById('previewImage');
-    previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
-    const modal = document.getElementById('previewModal');
-    modal.style.display = 'flex';
-    
-    // Setup download button
-    const downloadButton = modal.querySelector('.size-button');
-    downloadButton.href = `{{ site.baseurl }}/wallpapers/archive/${currentImage}`;
-    downloadButton.removeAttribute('download');
-    
-    // Apply current preference
-    updateDownloadButtons();
-}
-
-function hidePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    modal.style.display = 'none';
 }
 
 // Close modal when clicking outside
