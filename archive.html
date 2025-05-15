@@ -11,7 +11,8 @@ title: Community Archive
 
 <div class="grid">
     {% for i in (1..138) %}
-        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}        <div class="wallpaper-item" onclick="showPreviewModal('{{ padded_i }}.jpg')">
+        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}        
+        <div class="wallpaper-item" onclick="showPreviewModal('{{ padded_i }}.jpg')">
             <div class="image-container">                
                 <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/{{ padded_i }}.jpg" 
                      alt="Archive Wallpaper {{ padded_i }}">

@@ -6,7 +6,8 @@ title: Desktop Wallpapers
 <h2>Desktop Wallpapers</h2>
 
 <div class="grid" id="wallpapers">    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+    {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            
+    <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
                 </div>                <div class="card-content">
@@ -263,7 +264,7 @@ function showPreviewModal(image) {
     currentImage = image;
     const previewImage = document.getElementById('previewImage');
     // Using the largest size for preview
-    previewImage.src = `{{ site.baseurl }}/wallpapers/desktop/3840x2160/${image}`;
+    previewImage.src = `{{ site.baseurl }}/wallpapers/desktop/1920x1080/${image}`;
     const modal = document.getElementById('previewModal');
     modal.style.display = 'flex';
     

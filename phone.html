@@ -7,7 +7,8 @@ title: Phone Wallpapers
 
 <div class="grid" id="wallpapers">
     {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            
+    <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/phone/320x568/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
                 </div>                <div class="card-content">
