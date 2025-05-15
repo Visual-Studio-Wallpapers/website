@@ -101,43 +101,68 @@ title: Watch Wallpapers
 
 .modal-content {
     background-color: white;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 95%;
     max-width: 400px;
-    width: 90%;
 }
 
 .preview-content {
-    max-width: 95%;
+    width: 95%;
+    max-width: 1200px;
     max-height: 95vh;
-    width: auto;
     padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        padding: 2rem;
+    }
 }
 
 .preview-layout {
     display: flex;
     gap: 2rem;
     align-items: flex-start;
+    flex-direction: column;
 }
 
 .preview-image-container {
-    flex: 1;
-    max-height: 85vh;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
 .preview-image-container img {
-    width: auto;
-    height: 100%;
+    width: 100%;
+    height: auto;
     max-height: 85vh;
     object-fit: contain;
     border-radius: 8px;
 }
 
 .preview-sidebar {
-    width: 250px;
-    flex-shrink: 0;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+    .preview-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .preview-image-container {
+        margin: 0;
+    }
+    
+    .preview-sidebar {
+        width: 250px;
+        margin: 0;
+    }
 }
 
 .preview-sidebar h3 {
