@@ -9,7 +9,8 @@ title: Watch Wallpapers
             <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
-                </div>                <div class="card-content">
+                </div>                
+                <div class="card-content">
                     <span class="hint">Click to preview</span>
                 </div>
             </div>
@@ -56,6 +57,7 @@ title: Watch Wallpapers
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
+    cursor: pointer;
 }
 
 .card:hover {
