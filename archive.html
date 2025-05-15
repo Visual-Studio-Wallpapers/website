@@ -242,23 +242,25 @@ title: Community Archive
 
 .page-button {
     padding: 0.5rem 1rem;
-    border: 1px solid var(--vscode-button-foreground, #0098ff);
+    border: 1px solid var(--primary);
     border-radius: 4px;
     text-decoration: none;
-    color: var(--vscode-button-foreground, #0098ff);
+    color: var(--primary);
     background: transparent;
     transition: all 0.2s;
     cursor: pointer;
 }
 
 .page-button:hover {
-    background: var(--vscode-button-hoverBackground, rgba(0, 152, 255, 0.1));
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: white;
 }
 
 .page-button.current {
-    background: var(--vscode-button-background, #0098ff);
-    color: var(--vscode-button-foreground, #ffffff);
-    border-color: var(--vscode-button-background, #0098ff);
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
 }
 
 @media (max-width: 768px) {
