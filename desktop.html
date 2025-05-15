@@ -10,9 +10,8 @@ title: Desktop Wallpapers
     {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
-                </div>
-                <div class="card-content">
-                    <button class="button" onclick="event.stopPropagation(); showDownloadOptions('{{ image.basename }}{{ image.extname }}')">Download</button>
+                </div>                <div class="card-content">
+                    <span class="hint">Click to preview</span>
                 </div>
             </div>
         {% endif %}
@@ -217,10 +216,14 @@ function updateDownloadButtons() {
     const openInNew = openInNewWindow.checked;
     
     sizeButtons.forEach(button => {
+        const size = button.dataset.size;
         if (openInNew) {
             button.target = '_blank';
+            button.removeAttribute('download');
         } else {
             button.removeAttribute('target');
+            const newFileName = `desktop_${size}_${currentImage}`;
+            button.setAttribute('download', newFileName);
         }
     });
 }

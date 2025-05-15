@@ -11,17 +11,38 @@ title: Community Archive
 
 <div class="grid">
     {% for i in (1..138) %}
-        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}
-        <div class="wallpaper-item">
+        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}        <div class="wallpaper-item" onclick="showPreviewModal('{{ padded_i }}.jpg')">
             <div class="image-container">                
                 <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/{{ padded_i }}.jpg" 
                      alt="Archive Wallpaper {{ padded_i }}">
-            </div>            <div class="card-content">
-                <a href="{{ site.baseurl }}/wallpapers/archive/{{ padded_i }}.jpg" 
-                   class="button" download>Download</a>
+            </div>              <div class="card-content">
+                <span class="hint">Click to preview</span>
             </div>
         </div>
     {% endfor %}
+</div>
+
+<div id="previewModal" class="modal">
+    <div class="modal-content preview-content">
+        <div class="preview-layout">
+            <div class="preview-image-container">
+                <img id="previewImage" src="" alt="Wallpaper Preview">
+            </div>
+            <div class="preview-sidebar">
+                <h3>Download Options</h3>
+                <div class="download-button">
+                    <a href="#" class="button size-button" data-size="full">Download Full Size</a>
+                </div>
+                <div class="preview-settings">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="openInNewWindow" checked>
+                        Open in new window
+                    </label>
+                </div>
+                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -79,5 +100,150 @@ title: Community Archive
     text-align: center;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
 
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.preview-content {
+    max-width: 95%;
+    max-height: 95vh;
+    width: auto;
+    padding: 1rem;
+}
+
+.preview-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.preview-image-container {
+    flex: 1;
+    max-height: 85vh;
+}
+
+.preview-image-container img {
+    width: auto;
+    height: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.preview-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.preview-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.download-button {
+    margin-bottom: 1.5rem;
+}
+
+.preview-settings {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.hint {
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
 </style>
+
+<script>
+let currentImage = '';
+
+// Load user preference for opening in new window
+const openInNewWindow = document.getElementById('openInNewWindow');
+openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
+
+// Save preference when checkbox is changed
+openInNewWindow.addEventListener('change', function() {
+    localStorage.setItem('openInNewWindow', this.checked);
+    updateDownloadButtons();
+});
+
+function updateDownloadButtons() {
+    const sizeButtons = document.querySelectorAll('.size-button');
+    const openInNew = openInNewWindow.checked;
+    
+    sizeButtons.forEach(button => {
+        if (openInNew) {
+            button.target = '_blank';
+            button.removeAttribute('download');
+        } else {
+            button.removeAttribute('target');
+            button.setAttribute('download', currentImage);
+        }
+    });
+}
+
+function showPreviewModal(image) {
+    currentImage = image;
+    const previewImage = document.getElementById('previewImage');
+    previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'flex';
+    
+    // Setup download button
+    const downloadButton = modal.querySelector('.size-button');
+    downloadButton.href = `{{ site.baseurl }}/wallpapers/archive/${currentImage}`;
+    downloadButton.removeAttribute('download');
+    
+    // Apply current preference
+    updateDownloadButtons();
+}
+
+function hidePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const previewModal = document.getElementById('previewModal');
+    if (event.target === previewModal) {
+        hidePreviewModal();
+    }
+});
+</script>

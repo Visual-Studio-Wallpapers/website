@@ -5,14 +5,240 @@ title: Watch Wallpapers
 
 <h2>Watch Wallpapers</h2>
 
-<div class="grid" id="wallpapers">    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
-            <div class="card">
-                <img src="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
-                <div class="card-content">                    <a href="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" 
-                       class="button" download="watch_368x448_{{ image.basename }}{{ image.extname }}">Download</a>
+<div class="grid" id="wallpapers">    {% for image in site.static_files %}    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
+            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
+                </div>                <div class="card-content">
+                    <span class="hint">Click to preview</span>
                 </div>
             </div>
         {% endif %}
     {% endfor %}
 </div>
+
+<div id="previewModal" class="modal">
+    <div class="modal-content preview-content">
+        <div class="preview-layout">
+            <div class="preview-image-container">
+                <img id="previewImage" src="" alt="Wallpaper Preview">
+            </div>
+            <div class="preview-sidebar">
+                <h3>Download Options</h3>
+                <div class="size-buttons preview-sizes">
+                    <a href="#" class="button size-button" data-size="368x448">Download 368x448</a>
+                </div>
+                <div class="preview-settings">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="openInNewWindow" checked>
+                        Open in new window
+                    </label>
+                </div>
+                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.card-content {
+    padding: 1rem;
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #0066cc;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.button:hover {
+    background-color: #0052a3;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.preview-content {
+    max-width: 95%;
+    max-height: 95vh;
+    width: auto;
+    padding: 1rem;
+}
+
+.preview-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.preview-image-container {
+    flex: 1;
+    max-height: 85vh;
+}
+
+.preview-image-container img {
+    width: auto;
+    height: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.preview-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.preview-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.preview-sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.preview-settings {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.hint {
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+</style>
+
+<script>
+let currentImage = '';
+
+// Load user preference for opening in new window
+const openInNewWindow = document.getElementById('openInNewWindow');
+openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
+
+// Save preference when checkbox is changed
+openInNewWindow.addEventListener('change', function() {
+    localStorage.setItem('openInNewWindow', this.checked);
+    updateDownloadButtons();
+});
+
+function updateDownloadButtons() {
+    const sizeButtons = document.querySelectorAll('.size-button');
+    const openInNew = openInNewWindow.checked;
+    
+    sizeButtons.forEach(button => {
+        const size = button.dataset.size;
+        if (openInNew) {
+            button.target = '_blank';
+            button.removeAttribute('download');
+        } else {
+            button.removeAttribute('target');
+            const newFileName = `watch_${size}_${currentImage}`;
+            button.setAttribute('download', newFileName);
+        }
+    });
+}
+
+function showPreviewModal(image) {
+    currentImage = image;
+    const previewImage = document.getElementById('previewImage');
+    previewImage.src = `{{ site.baseurl }}/wallpapers/watch/368x448/${image}`;
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'flex';
+    
+    // Setup download buttons
+    const sizeButtons = modal.querySelectorAll('.size-button');
+    sizeButtons.forEach(button => {
+        const size = button.dataset.size;
+        const downloadUrl = `{{ site.baseurl }}/wallpapers/watch/368x448/${currentImage}`;
+        button.href = downloadUrl;
+        button.removeAttribute('download');
+    });
+    
+    // Apply current preference
+    updateDownloadButtons();
+}
+
+function hidePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'none';
+}
+
+// Close modals when clicking outside
+document.addEventListener('click', function(event) {
+    const previewModal = document.getElementById('previewModal');
+    if (event.target === previewModal) {
+        hidePreviewModal();
+    }
+});
+</script>

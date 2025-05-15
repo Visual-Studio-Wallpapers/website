@@ -11,9 +11,8 @@ title: Phone Wallpapers
     {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/phone/320x568/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
-                </div>
-                <div class="card-content">
-                    <button class="button" onclick="event.stopPropagation(); showDownloadOptions('{{ image.basename }}{{ image.extname }}')">Download</button>
+                </div>                <div class="card-content">
+                    <span class="hint">Click to preview</span>
                 </div>
             </div>
         {% endif %}
@@ -190,6 +189,12 @@ title: Phone Wallpapers
     object-fit: cover;
     object-position: center;
 }
+
+.hint {
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
 </style>
 
 <script>
@@ -210,10 +215,14 @@ function updateDownloadButtons() {
     const openInNew = openInNewWindow.checked;
     
     sizeButtons.forEach(button => {
+        const size = button.dataset.size;
         if (openInNew) {
             button.target = '_blank';
+            button.removeAttribute('download');
         } else {
             button.removeAttribute('target');
+            const newFileName = `phone_${size}_${currentImage}`;
+            button.setAttribute('download', newFileName);
         }
     });
 }
