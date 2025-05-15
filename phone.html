@@ -8,10 +8,12 @@ title: Phone Wallpapers
 
 <div class="grid" id="wallpapers">
     {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            <div class="card">
-                <img src="{{ site.baseurl }}/wallpapers/phone/320x568/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
+    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/phone/320x568/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
+                </div>
                 <div class="card-content">
-                    <button class="button" onclick="showModal('{{ image.basename }}{{ image.extname }}')">Download</button>
+                    <button class="button" onclick="event.stopPropagation(); showDownloadOptions('{{ image.basename }}{{ image.extname }}')">Download</button>
                 </div>
             </div>
         {% endif %}
@@ -23,10 +25,35 @@ title: Phone Wallpapers
         <h3>Select Size</h3>
         <div class="size-buttons">
             {% for size in site.data.sizes.phone %}
-                <a href="#" class="button size-button" data-size="{{ size }}">{{ size }}</a>
+                <a href="#" class="button size-button" data-size="{{ size }}" target="_blank">{{ size }}</a>
             {% endfor %}
         </div>
         <button class="button close-button" onclick="hideModal()">Close</button>
+    </div>
+</div>
+
+<div id="previewModal" class="modal">
+    <div class="modal-content preview-content">
+        <div class="preview-layout">
+            <div class="preview-image-container">
+                <img id="previewImage" src="" alt="Wallpaper Preview">
+            </div>
+            <div class="preview-sidebar">
+                <h3>Download Options</h3>
+                <div class="size-buttons preview-sizes">
+                    {% for size in site.data.sizes.phone %}
+                        <a href="#" class="button size-button" data-size="{{ size }}">Download {{ size }}</a>
+                    {% endfor %}
+                </div>
+                <div class="preview-settings">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="openInNewWindow" checked>
+                        Open in new window
+                    </label>
+                </div>
+                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -54,6 +81,69 @@ title: Phone Wallpapers
     width: 90%;
 }
 
+.preview-content {
+    max-width: 95%;
+    max-height: 95vh;
+    width: auto;
+    padding: 1rem;
+}
+
+.preview-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.preview-image-container {
+    flex: 1;
+    max-height: 85vh;
+}
+
+.preview-image-container img {
+    width: auto;
+    height: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.preview-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.preview-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+.preview-sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.preview-settings {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
 .size-buttons {
     display: grid;
     gap: 1rem;
@@ -73,25 +163,98 @@ title: Phone Wallpapers
     background-color: #888;
 }
 
+.card {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
 .card-content {
     padding: 1rem;
     text-align: center;
+}
+
+.image-container {
+    width: 100%;
+    aspect-ratio: 9/16;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 </style>
 
 <script>
 let currentImage = '';
 
-function showModal(image) {
+// Load user preference for opening in new window
+const openInNewWindow = document.getElementById('openInNewWindow');
+openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
+
+// Save preference when checkbox is changed
+openInNewWindow.addEventListener('change', function() {
+    localStorage.setItem('openInNewWindow', this.checked);
+    updateDownloadButtons();
+});
+
+function updateDownloadButtons() {
+    const sizeButtons = document.querySelectorAll('.size-button');
+    const openInNew = openInNewWindow.checked;
+    
+    sizeButtons.forEach(button => {
+        if (openInNew) {
+            button.target = '_blank';
+        } else {
+            button.removeAttribute('target');
+        }
+    });
+}
+
+function showPreviewModal(image) {
     currentImage = image;
-    const modal = document.getElementById('downloadModal');
+    const previewImage = document.getElementById('previewImage');
+    // Using the largest size for preview
+    previewImage.src = `{{ site.baseurl }}/wallpapers/phone/430x932/${image}`;
+    const modal = document.getElementById('previewModal');
     modal.style.display = 'flex';
-      const sizeButtons = document.querySelectorAll('.size-button');
+    
+    // Setup download buttons
+    const sizeButtons = modal.querySelectorAll('.size-button');
     sizeButtons.forEach(button => {
         const size = button.dataset.size;
         const downloadUrl = `{{ site.baseurl }}/wallpapers/phone/${size}/${currentImage}`;
         button.href = downloadUrl;
-        // Format: phone_360x640_filename.jpg
+        button.removeAttribute('download');  // Remove download attribute to open in browser
+    });
+    
+    // Apply current preference
+    updateDownloadButtons();
+}
+
+function hidePreviewModal() {
+    const modal = document.getElementById('previewModal');
+    modal.style.display = 'none';
+}
+
+function showDownloadOptions(image) {
+    currentImage = image;
+    hidePreviewModal();
+    const modal = document.getElementById('downloadModal');
+    modal.style.display = 'flex';
+    const sizeButtons = document.querySelectorAll('.size-button');
+    sizeButtons.forEach(button => {
+        const size = button.dataset.size;
+        const downloadUrl = `{{ site.baseurl }}/wallpapers/phone/${size}/${currentImage}`;
+        button.href = downloadUrl;
+        button.target = '_blank';
         const newFileName = `phone_${size}_${currentImage}`;
         button.setAttribute('download', newFileName);
     });
@@ -102,11 +265,14 @@ function hideModal() {
     modal.style.display = 'none';
 }
 
-// Close modal when clicking outside
+// Close modals when clicking outside
 document.addEventListener('click', function(event) {
-    const modal = document.getElementById('downloadModal');
-    if (event.target === modal) {
+    const downloadModal = document.getElementById('downloadModal');
+    const previewModal = document.getElementById('previewModal');
+    if (event.target === downloadModal) {
         hideModal();
+    } else if (event.target === previewModal) {
+        hidePreviewModal();
     }
 });
 </script>
