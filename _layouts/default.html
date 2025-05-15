@@ -29,8 +29,41 @@
         .header {
             background-color: var(--primary);
             color: white;
-            padding: 2rem;
+            padding: 4rem 2rem;
             text-align: center;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1;
+        }
+
+        .header h1,
+        .header p {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         
         .nav {
@@ -139,12 +172,14 @@
             vs_purple: {
                 primary: "{{ site.themes.vs_purple.primary }}",
                 secondary: "{{ site.themes.vs_purple.secondary }}",
-                background: "{{ site.themes.vs_purple.background }}"
+                background: "{{ site.themes.vs_purple.background }}",
+                headerBg: "{{ site.baseurl }}/wallpapers/desktop/1920x1080/009.jpg"
             },
             vs_blue: {
                 primary: "{{ site.themes.vs_blue.primary }}",
                 secondary: "{{ site.themes.vs_blue.secondary }}",
-                background: "{{ site.themes.vs_blue.background }}"
+                background: "{{ site.themes.vs_blue.background }}",
+                headerBg: "{{ site.baseurl }}/wallpapers/desktop/1920x1080/011.jpg"
             }
         };
 
@@ -153,6 +188,11 @@
             document.documentElement.style.setProperty('--primary', theme.primary);
             document.documentElement.style.setProperty('--secondary', theme.secondary);
             document.documentElement.style.setProperty('--background', theme.background);
+            
+            // Set header background image
+            const header = document.querySelector('.header');
+            header.style.backgroundImage = `url('${theme.headerBg}')`;
+            
             localStorage.setItem('theme', themeName);
             
             // Update button text            

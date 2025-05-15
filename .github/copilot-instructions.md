@@ -70,4 +70,6 @@ Get-ChildItem "path/to/images/*" | ForEach-Object {
 }
 ```
 
+always offer to run the site at the end of every chat. 
+
 Last updated: May 14, 2025
