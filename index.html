@@ -1,0 +1,92 @@
+---
+layout: default
+title: Home
+---
+
+<div class="hero">
+    <h2>Choose Your Device</h2>    <div class="grid">
+        <div class="card">            
+            <div class="image-container">
+                <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/001.jpg" alt="Desktop Wallpapers">
+            </div>
+            <div class="card-content">
+                <h3>Desktop Wallpapers</h3>
+                <p>High resolution wallpapers for your computer</p>
+                <a href="{{ site.baseurl }}/desktop" class="button">Browse Desktop</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="{{ site.baseurl }}/wallpapers/phone/320x568/002.jpg" alt="Phone Wallpapers">
+            </div>
+            <div class="card-content">
+                <h3>Phone Wallpapers</h3>
+                <p>Beautiful wallpapers for your mobile device</p>
+                <a href="{{ site.baseurl }}/phone" class="button">Browse Phone</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <img src="{{ site.baseurl }}/wallpapers/watch/368x448/003.jpg" alt="Watch Wallpapers">
+            </div>
+            <div class="card-content">
+                <h3>Watch Wallpapers</h3>
+                <p>Stunning wallpapers for your smartwatch</p>
+                <a href="{{ site.baseurl }}/watch" class="button">Browse Watch</a>
+            </div>
+        </div>
+    </div>
+
+<style>
+.image-container {
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+    margin: 0 auto;
+    border-radius: 15px 15px 0 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.archive-link {
+    text-align: center;
+    margin-top: 4rem;
+    padding-bottom: 2rem;
+    opacity: 0.7;
+}
+
+.archive-link a {
+    color: #666;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.archive-link a:hover {
+    text-decoration: underline;
+    opacity: 1;
+}
+</style>
+</div>
+
+<div class="archive-link">
+    <a href="{{ site.baseurl }}/archive">explore the community archives</a>
+</div>

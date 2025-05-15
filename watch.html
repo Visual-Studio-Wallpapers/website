@@ -1,0 +1,18 @@
+---
+layout: default
+title: Watch Wallpapers
+---
+
+<h2>Watch Wallpapers</h2>
+
+<div class="grid" id="wallpapers">    {% for image in site.static_files %}
+    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
+            <div class="card">
+                <img src="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
+                <div class="card-content">                    <a href="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" 
+                       class="button" download="watch_368x448_{{ image.basename }}{{ image.extname }}">Download</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

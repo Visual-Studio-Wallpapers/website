@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Theme variables will be set via JavaScript */
+            --primary: {{ site.themes.vs_purple.primary }};
+            --secondary: {{ site.themes.vs_purple.secondary }};
+            --background: {{ site.themes.vs_purple.background }};
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--background);
+            color: #333;
+        }
+        
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .nav {
+            background-color: var(--secondary);
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle img {
+            width: auto;
+            height: 20px;
+            vertical-align: middle;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+          .card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .card-content {
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .button:hover {
+            background-color: var(--secondary);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--primary);
+            color: white;
+            margin-top: 2rem;
+        }
+    </style>
+    {% seo %}
+    <script>
+        const themes = {
+            vs_purple: {
+                primary: "{{ site.themes.vs_purple.primary }}",
+                secondary: "{{ site.themes.vs_purple.secondary }}",
+                background: "{{ site.themes.vs_purple.background }}"
+            },
+            vs_blue: {
+                primary: "{{ site.themes.vs_blue.primary }}",
+                secondary: "{{ site.themes.vs_blue.secondary }}",
+                background: "{{ site.themes.vs_blue.background }}"
+            }
+        };
+
+        function setTheme(themeName) {
+            const theme = themes[themeName];
+            document.documentElement.style.setProperty('--primary', theme.primary);
+            document.documentElement.style.setProperty('--secondary', theme.secondary);
+            document.documentElement.style.setProperty('--background', theme.background);
+            localStorage.setItem('theme', themeName);
+            
+            // Update button text            
+            const themeToggle = document.getElementById('theme-toggle');
+            const toggleText = themeToggle.querySelector('.toggle-text');
+            const vsCodeIcon = themeToggle.querySelector('.vscode-icon');
+            const vsIcon = themeToggle.querySelector('.vs-icon');
+            
+            // Update text and show the icon for the theme we're switching to
+            const nextTheme = themeName === 'vs_purple' ? 'VS Code Blue' : 'VS Purple';
+            toggleText.textContent = `Switch to ${nextTheme}`;
+            // Show VS Code icon when text says "Switch to VS Code Blue"
+            // Show VS icon when text says "Switch to VS Purple"
+            vsCodeIcon.style.display = nextTheme === 'VS Code Blue' ? 'inline-block' : 'none';
+            vsIcon.style.display = nextTheme === 'VS Purple' ? 'inline-block' : 'none';
+        }
+
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || '{{ site.default_theme }}';
+            const newTheme = currentTheme === 'vs_purple' ? 'vs_blue' : 'vs_purple';
+            setTheme(newTheme);
+        }
+
+        // Initialize theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || '{{ site.default_theme }}';
+            setTheme(savedTheme);
+        });
+    </script>
+</head>
+<body>
+    <header class="header">
+        <h1>{{ site.title }}</h1>
+        <p>{{ site.description }}</p>
+    </header>
+    
+    <nav class="nav">
+        <a href="{{ site.baseurl }}/">Home</a>
+        <a href="{{ site.baseurl }}/desktop">Desktop</a>
+        <a href="{{ site.baseurl }}/phone">Phone</a>
+        <a href="{{ site.baseurl }}/watch">Watch</a>
+        <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">
+            <img src="{{ site.baseurl }}/icons/visualstudiocode.png" alt="VS Code" class="vscode-icon">
+            <img src="{{ site.baseurl }}/icons/visualstudio.png" alt="Visual Studio" class="vs-icon">
+            <span class="toggle-text">Switch to VS Code Blue</span>
+        </button>
+    </nav>
+    
+    <main class="container">
+        {{ content }}
+    </main>
+    
+    <footer class="footer">
+        <p>&copy; {{ site.time | date: '%Y' }} Microsoft. All rights reserved.</p>
+    </footer>
+</body>
+</html>

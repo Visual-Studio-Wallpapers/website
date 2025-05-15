@@ -1,0 +1,113 @@
+---
+layout: default
+title: Desktop Wallpapers
+---
+
+<h2>Desktop Wallpapers</h2>
+<h3>Available Wallpapers</h3>
+
+<div class="grid" id="wallpapers">    {% for image in site.static_files %}
+    {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            <div class="card">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
+                </div>
+                <div class="card-content">
+                    <button class="button" onclick="showModal('{{ image.basename }}{{ image.extname }}')">Download</button>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<div id="downloadModal" class="modal">
+    <div class="modal-content">
+        <h3>Select Size</h3>
+        <div class="size-buttons">
+            {% for size in site.data.sizes.desktop %}
+                <a href="#" class="button size-button" data-size="{{ size }}">{{ size }}</a>
+            {% endfor %}
+        </div>
+        <button class="button close-button" onclick="hideModal()">Close</button>
+    </div>
+</div>
+
+<style>
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.size-buttons {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.size-button {
+    display: block;
+    width: 100%;
+}
+
+.close-button {
+    background-color: #666;
+}
+
+.close-button:hover {
+    background-color: #888;
+}
+
+.card-content {
+    padding: 1rem;
+    text-align: center;
+}
+</style>
+
+<script>
+let currentImage = '';
+
+function showModal(image) {
+    currentImage = image;
+    const modal = document.getElementById('downloadModal');
+    modal.style.display = 'flex';
+      const sizeButtons = document.querySelectorAll('.size-button');
+    sizeButtons.forEach(button => {
+        const size = button.dataset.size;
+        const downloadUrl = `{{ site.baseurl }}/wallpapers/desktop/${size}/${currentImage}`;
+        button.href = downloadUrl;
+        // Format: desktop_1920x1080_filename.jpg
+        const newFileName = `desktop_${size}_${currentImage}`;
+        button.setAttribute('download', newFileName);
+    });
+}
+
+function hideModal() {
+    const modal = document.getElementById('downloadModal');
+    modal.style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('downloadModal');
+    if (event.target === modal) {
+        hideModal();
+    }
+});
+</script>

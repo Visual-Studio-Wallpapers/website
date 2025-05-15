@@ -1,0 +1,83 @@
+---
+layout: default
+title: Community Archive
+---
+
+<div class="disclaimer">
+    <p><strong>Disclaimer:</strong> These wallpapers come from the non-Microsoft affiliated 
+    <a href="https://www.tumblr.com/vs2010wallpapers-blog">VS2010 Wallpapers Blog</a> run by Scott Hanselman. 
+    This is an archived collection preserved for historical purposes.</p>
+</div>
+
+<div class="grid">
+    {% for i in (1..138) %}
+        {% capture padded_i %}{{ i | prepend: '000' | slice: -3, 3 }}{% endcapture %}
+        <div class="wallpaper-item">
+            <div class="image-container">                
+                <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/{{ padded_i }}.jpg" 
+                     alt="Archive Wallpaper {{ padded_i }}">
+            </div>            <div class="card-content">
+                <a href="{{ site.baseurl }}/wallpapers/archive/{{ padded_i }}.jpg" 
+                   class="button" download>Download</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<style>
+.disclaimer {
+    background-color: #f8f9fa;
+    border-left: 4px solid #17a2b8;
+    padding: 1rem;
+    margin: 2rem 0;
+    border-radius: 4px;
+}
+
+.disclaimer a {
+    color: #17a2b8;
+    text-decoration: none;
+}
+
+.disclaimer a:hover {
+    text-decoration: underline;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.wallpaper-item {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.wallpaper-item:hover {
+    transform: translateY(-5px);
+}
+
+.image-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-content {
+    padding: 1rem;
+    text-align: center;
+}
+
+
+</style>

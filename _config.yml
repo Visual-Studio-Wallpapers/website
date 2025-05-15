@@ -1,0 +1,28 @@
+title: Visual Studio Wallpapers
+description: Beautiful wallpapers for your Desktop, Phone, and Watch
+baseurl: "/visualstudio-wallpapers"
+url: ""
+
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-seo-tag
+
+# Theme settings
+themes:
+  vs_purple:
+    primary: "#68217a"    # Visual Studio purple
+    secondary: "#8b2da2"
+    background: "#f5f5f5"
+  vs_blue:
+    primary: "#007acc"    # VS Code blue
+    secondary: "#0098ff"
+    background: "#f5f5f5"
+
+# Default theme
+default_theme: "vs_purple"
+
+# Collections
+collections:
+  wallpapers:
+    output: true
