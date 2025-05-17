@@ -30,28 +30,30 @@ title: Desktop Wallpapers
     </div>
 </div>
 
-<div id="previewModal" class="modal">
-    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
-    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
+<div id="previewModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>
+    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()" aria-label="Show previous wallpaper">&lt;</button>
+    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()" aria-label="Show next wallpaper">&gt;</button>
     <div class="modal-content preview-content">
         <div class="preview-layout">
             <div class="preview-image-container">
-                <img id="previewImage" src="" alt="Wallpaper Preview">
+                <img id="previewImage" src="" alt="Wallpaper Preview" aria-describedby="currentImageDesc">
+                <p id="currentImageDesc" class="sr-only"></p>
             </div>
             <div class="preview-sidebar">
-                <h3>Download Options</h3>
-                <div class="size-buttons preview-sizes">
+                <h3 id="previewModalTitle">Download Options</h3>
+                <div class="size-buttons preview-sizes" role="group" aria-label="Download size options">
                     {% for size in site.data.sizes.desktop %}
-                        <a href="#" class="button size-button" data-size="{{ size }}">Download {{ size }}</a>
+                        <a href="#" class="button size-button" data-size="{{ size }}" role="button">Download {{ size }}</a>
                     {% endfor %}
                 </div>
                 <div class="preview-settings">
                     <label class="checkbox-label">
-                        <input type="checkbox" id="openInNewWindow" checked>
+                        <input type="checkbox" id="openInNewWindow" checked aria-describedby="openInNewWindowDesc">
                         Open in new window
                     </label>
+                    <span id="openInNewWindowDesc" class="sr-only">Choose whether to open downloads in a new window or download directly</span>
                 </div>
-                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
+                <button class="button close-button" onclick="hidePreviewModal()" aria-label="Close preview">Close</button>
             </div>
         </div>
     </div>
@@ -347,17 +349,27 @@ function updateDownloadButtons() {
     });
 }
 
+let focusedElementBeforeModal;
+const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 function showPreviewModal(image) {
+    // Store last focused element
+    focusedElementBeforeModal = document.activeElement;
+    
     currentImage = image;
     currentWallpaperIndex = wallpapers.indexOf(image);
     const previewImage = document.getElementById('previewImage');
     const container = document.querySelector('.preview-image-container');
+    const modal = document.getElementById('previewModal');
     
     if (!container.classList.contains('transitioning')) {
         // Using the largest size for preview
         previewImage.src = `{{ site.baseurl }}/wallpapers/desktop/1920x1080/${image}`;
-        const modal = document.getElementById('previewModal');
+        modal.hidden = false;
         modal.style.display = 'flex';
+        
+        // Set aria description
+        document.getElementById('currentImageDesc').textContent = `Wallpaper ${image.split('.')[0]}`;
         
         // Setup download buttons
         const sizeButtons = modal.querySelectorAll('.size-button');
@@ -368,15 +380,53 @@ function showPreviewModal(image) {
             button.removeAttribute('download');  // Remove download attribute to open in browser
         });
         
-        // Apply current preference
         updateDownloadButtons();
+        
+        // Focus first focusable element
+        const focusable = modal.querySelectorAll(focusableElements);
+        if (focusable.length) focusable[0].focus();
     }
 }
 
 function hidePreviewModal() {
     const modal = document.getElementById('previewModal');
     modal.style.display = 'none';
+    modal.hidden = true;
+    
+    // Restore focus
+    if (focusedElementBeforeModal) {
+        focusedElementBeforeModal.focus();
+    }
 }
+
+// Add focus trap to modal
+document.getElementById('previewModal').addEventListener('keydown', function(e) {
+    if (this.style.display !== 'flex') return;
+    
+    const focusable = this.querySelectorAll(focusableElements);
+    const firstFocusable = focusable[0];
+    const lastFocusable = focusable[focusable.length - 1];
+    
+    // Handle tab key
+    if (e.key === 'Tab') {
+        if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
+            }
+        } else {
+            if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
+    }
+    
+    // Handle escape key
+    if (e.key === 'Escape') {
+        hidePreviewModal();
+    }
+});
 
 function showDownloadOptions(image) {
     currentImage = image;

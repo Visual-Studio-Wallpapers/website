@@ -3,503 +3,579 @@ layout: default
 title: Community Archive
 ---
 
-<div class="disclaimer">
-    <p><strong>Disclaimer:</strong> These wallpapers come from the non-Microsoft affiliated 
-    <a href="https://www.tumblr.com/vs2010wallpapers-blog">VS2010 Wallpapers Blog</a> run by Scott Hanselman. 
-    This is an archived collection preserved for historical purposes.</p>
-</div>
-
-{% assign total_items = 137 %}
-
-<div id="wallpaperGrid" class="grid">
-</div>
-
-<div class="pagination-controls">
-    <span id="pageInfo" class="page-info"></span>
-    <div id="pageButtons" class="page-buttons">
+<main role="main">
+    <div class="disclaimer" role="note">
+        <p><strong>Disclaimer:</strong> These wallpapers come from the non-Microsoft affiliated 
+        <a href="https://www.tumblr.com/vs2010wallpapers-blog" target="_blank" rel="noopener noreferrer">VS2010 Wallpapers Blog</a> run by Scott Hanselman. 
+        This is an archived collection preserved for historical purposes.</p>
     </div>
-</div>
 
-<div id="previewModal" class="modal">
-    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
-    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
-    <div class="modal-content preview-content">
-        <div class="preview-layout">
-            <div class="preview-image-container">
-                <img id="previewImage" src="" alt="Wallpaper Preview">
-            </div>
-            <div class="preview-sidebar">
-                <h3>Download Options</h3>
-                <div class="download-button">
-                    <a href="#" class="button size-button" data-size="full">Download Full Size</a>
+    {% assign total_items = 137 %}
+
+    <div id="wallpaperGrid" class="grid" role="list" aria-label="Archive wallpapers grid"></div>
+
+    <nav class="pagination-controls" role="navigation" aria-label="Wallpaper pages navigation">
+        <span id="pageInfo" class="page-info" aria-live="polite"></span>
+        <div id="pageButtons" class="page-buttons" role="group" aria-label="Pagination"></div>
+    </nav>
+
+    <div id="previewModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="previewTitle" hidden>
+        <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()" aria-label="Show previous wallpaper">&lt;</button>
+        <button class="nav-arrow next-arrow" onclick="showNextWallpaper()" aria-label="Show next wallpaper">&gt;</button>
+        <div class="modal-content preview-content">
+            <div class="preview-layout">
+                <div class="preview-image-container">
+                    <img id="previewImage" src="" alt="Wallpaper Preview" aria-describedby="currentImageDesc">
+                    <p id="currentImageDesc" class="sr-only"></p>
                 </div>
-                <div class="preview-settings">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="openInNewWindow" checked>
-                        Open in new window
-                    </label>
+                <div class="preview-sidebar">
+                    <h3 id="previewTitle">Download Options</h3>
+                    <div class="download-button">
+                        <a href="#" class="button size-button" data-size="full" role="button">Download Full Size</a>
+                    </div>
+                    <div class="preview-settings">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="openInNewWindow" checked aria-describedby="openInNewWindowDesc">
+                            Open in new window
+                        </label>
+                        <span id="openInNewWindowDesc" class="sr-only">Choose whether to open downloads in a new window or download directly</span>
+                    </div>
+                    <button class="button close-button" onclick="hidePreviewModal()" aria-label="Close preview">Close</button>
                 </div>
-                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-.disclaimer {
-    background-color: #f8f9fa;
-    border-left: 4px solid #17a2b8;
-    padding: 1rem;
-    margin: 2rem 0;
-    border-radius: 4px;
-}
+    <style>
+    .disclaimer {
+        background-color: #f8f9fa;
+        border-left: 4px solid #17a2b8;
+        padding: 1rem;
+        margin: 2rem 0;
+        border-radius: 4px;
+    }
 
-.disclaimer a {
-    color: #17a2b8;
-    text-decoration: none;
-}
+    .disclaimer a {
+        color: #17a2b8;
+        text-decoration: none;
+    }
 
-.disclaimer a:hover {
-    text-decoration: underline;
-}
+    .disclaimer a:hover {
+        text-decoration: underline;
+    }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 2rem;
-    padding: 2rem;
-}
-
-.wallpaper-item {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: transform 0.2s;
-    cursor: pointer;
-}
-
-.wallpaper-item:hover {
-    transform: translateY(-5px);
-}
-
-.image-container {
-    width: 100%;
-    aspect-ratio: 16/9;
-    overflow: hidden;
-    border-radius: 15px 15px 0 0;
-}
-
-.image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.card-content {
-    padding: 1rem;
-    text-align: center;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 95%;
-    max-width: 500px;
-}
-
-.preview-content {
-    width: 95%;
-    max-width: 1200px;
-    max-height: 95vh;
-    padding: 1rem;
-}
-
-@media (min-width: 768px) {
-    .modal-content {
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
         padding: 2rem;
     }
-}
 
-.preview-layout {
-    display: flex;
-    gap: 2rem;
-    align-items: flex-start;
-    flex-direction: column;
-}
-
-.preview-image-container {
-    width: 100%;
-    max-height: 600px;
-    margin: 0 auto;
-}
-
-.preview-image-container img {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    object-fit: contain;
-    border-radius: 8px;
-}
-
-@media (min-width: 768px) {
-    .preview-image-container img {
-        max-height: 85vh;
+    .wallpaper-item {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+        cursor: pointer;
+        outline: none;
     }
-}
 
-.preview-sidebar {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-}
+    .wallpaper-item:hover {
+        transform: translateY(-5px);
+    }
 
-@media (min-width: 1024px) {
+    .image-container {
+        width: 100%;
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .card-content {
+        padding: 1rem;
+        text-align: center;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 95%;
+        max-width: 500px;
+    }
+
+    .preview-content {
+        width: 95%;
+        max-width: 1200px;
+        max-height: 95vh;
+        padding: 1rem;
+    }
+
+    @media (min-width: 768px) {
+        .modal-content {
+            padding: 2rem;
+        }
+    }
+
     .preview-layout {
-        flex-direction: row;
+        display: flex;
+        gap: 2rem;
         align-items: flex-start;
+        flex-direction: column;
     }
-    
+
     .preview-image-container {
-        margin: 0;
+        width: 100%;
+        max-height: 600px;
+        margin: 0 auto;
     }
-    
+
+    .preview-image-container img {
+        width: 100%;
+        height: auto;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    @media (min-width: 768px) {
+        .preview-image-container img {
+            max-height: 85vh;
+        }
+    }
+
     .preview-sidebar {
-        width: 250px;
-        margin: 0;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
     }
-}
 
-.preview-sidebar h3 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-}
-
-.download-button {
-    margin-bottom: 1.5rem;
-}
-
-.preview-settings {
-    margin-bottom: 1.5rem;
-    text-align: left;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-.checkbox-label input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-}
-
-.hint {
-    color: #666;
-    font-size: 0.9rem;
-    opacity: 0.8;
-}
-
-.pagination-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    margin: 2rem 0;
-    text-align: center;
-}
-
-.page-info {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.page-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-}
-
-.page-button {
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--primary);
-    border-radius: 4px;
-    text-decoration: none;
-    color: var(--primary);
-    background: transparent;
-    transition: all 0.2s;
-    cursor: pointer;
-}
-
-.page-button:hover {
-    background-color: var(--secondary);
-    border-color: var(--secondary);
-    color: white;
-}
-
-.page-button.current {
-    background: var(--primary);
-    color: white;
-    border-color: var(--primary);
-}
-
-.nav-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.3);
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
-
-.nav-arrow:hover {
-    background: rgba(0, 0, 0, 0.5);
-}
-
-.prev-arrow {
-    left: 20px;
-}
-
-.next-arrow {
-    right: 20px;
-}
-
-@media (max-width: 768px) {
-    .nav-arrow {
-        width: 32px;
-        height: 32px;
-        font-size: 20px;
-    }
-    
-    .prev-arrow {
-        left: 10px;
-    }
-    
-    .next-arrow {
-        right: 10px;
-    }
-}
-
-</style>
-
-<script>
-var currentImage = '';
-var currentWallpaperIndex = 0;
-var ITEMS_PER_PAGE = 30;
-var TOTAL_ITEMS = {{ total_items }};
-var TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
-
-function getCurrentPage() {
-    const params = new URLSearchParams(window.location.search);
-    let page = parseInt(params.get('page')) || 1;
-    if (page < 1) page = 1;
-    if (page > TOTAL_PAGES) page = TOTAL_PAGES;
-    return page;
-}
-
-function updatePageContent() {
-    const currentPage = getCurrentPage();
-    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-    let end = offset + ITEMS_PER_PAGE;
-    if (end > TOTAL_ITEMS) end = TOTAL_ITEMS;
-
-    // Update grid content
-    const grid = document.getElementById('wallpaperGrid');
-    grid.innerHTML = '';
-    
-    for (let i = offset; i < end; i++) {
-        const actualI = i + 1;
-        const paddedI = String(actualI).padStart(3, '0');
-        const wallpaperItem = document.createElement('div');
-        wallpaperItem.className = 'wallpaper-item';
-        wallpaperItem.onclick = () => showPreviewModal(`${paddedI}.jpg`);
+    @media (min-width: 1024px) {
+        .preview-layout {
+            flex-direction: row;
+            align-items: flex-start;
+        }
         
-        wallpaperItem.innerHTML = `
-            <div class="image-container">                
-                <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/${paddedI}.jpg" 
-                     alt="Archive Wallpaper ${paddedI}">
-            </div>
-            <div class="card-content">
-                <span class="hint">Click to preview</span>
-            </div>
-        `;
-        grid.appendChild(wallpaperItem);
+        .preview-image-container {
+            margin: 0;
+        }
+        
+        .preview-sidebar {
+            width: 250px;
+            margin: 0;
+        }
     }
 
-    // Update pagination info
-    document.getElementById('pageInfo').textContent = `Page ${currentPage} of ${TOTAL_PAGES}`;
-    
-    // Update pagination buttons
-    const pageButtons = document.getElementById('pageButtons');
-    pageButtons.innerHTML = '';
-    
-    if (currentPage > 1) {
-        const prevButton = document.createElement('a');
-        prevButton.href = '#';
-        prevButton.className = 'page-button';
-        prevButton.innerHTML = '&laquo; Previous';
-        prevButton.onclick = (e) => {
-            e.preventDefault();
-            navigateToPage(currentPage - 1);
-        };
-        pageButtons.appendChild(prevButton);
+    .preview-sidebar h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
     }
-    
-    for (let i = 1; i <= TOTAL_PAGES; i++) {
-        const pageButton = document.createElement(i === currentPage ? 'span' : 'a');
-        pageButton.className = `page-button${i === currentPage ? ' current' : ''}`;
-        if (i !== currentPage) {
-            pageButton.href = '#';
-            pageButton.onclick = (e) => {
+
+    .download-button {
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-settings {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
+    .hint {
+        color: #666;
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .pagination-controls {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+
+    .page-info {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .page-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    .page-button {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--primary);
+        border-radius: 4px;
+        text-decoration: none;
+        color: var(--primary);
+        background: transparent;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+    .page-button:hover {
+        background-color: var(--secondary);
+        border-color: var(--secondary);
+        color: white;
+    }
+
+    .page-button.current {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    .nav-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+    .nav-arrow:hover {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .prev-arrow {
+        left: 20px;
+    }
+
+    .next-arrow {
+        right: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .nav-arrow {
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+        }
+        
+        .prev-arrow {
+            left: 10px;
+        }
+        
+        .next-arrow {
+            right: 10px;
+        }
+    }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    .wallpaper-item:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+    }
+
+    .nav-arrow:focus-visible,
+    .button:focus-visible {
+        outline: 3px solid var(--primary);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.4);
+    }
+
+    </style>
+
+    <script>
+    var currentImage = '';
+    var currentWallpaperIndex = 0;
+    var ITEMS_PER_PAGE = 30;
+    var TOTAL_ITEMS = {{ total_items }};
+    var TOTAL_PAGES = Math.ceil(TOTAL_ITEMS / ITEMS_PER_PAGE);
+
+    function getCurrentPage() {
+        const params = new URLSearchParams(window.location.search);
+        let page = parseInt(params.get('page')) || 1;
+        if (page < 1) page = 1;
+        if (page > TOTAL_PAGES) page = TOTAL_PAGES;
+        return page;
+    }
+
+    function updatePageContent() {
+        const currentPage = getCurrentPage();
+        const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+        let end = offset + ITEMS_PER_PAGE;
+        if (end > TOTAL_ITEMS) end = TOTAL_ITEMS;
+
+        // Update grid content
+        const grid = document.getElementById('wallpaperGrid');
+        grid.innerHTML = '';
+        
+        for (let i = offset; i < end; i++) {
+            const actualI = i + 1;
+            const paddedI = String(actualI).padStart(3, '0');
+            const wallpaperItem = document.createElement('div');
+            wallpaperItem.className = 'wallpaper-item';
+            wallpaperItem.setAttribute('role', 'listitem');
+            wallpaperItem.setAttribute('tabindex', '0');
+            wallpaperItem.setAttribute('aria-label', `Archive Wallpaper ${paddedI}`);
+            
+            // Add keyboard support
+            wallpaperItem.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    showPreviewModal(`${paddedI}.jpg`);
+                }
+            });
+            
+            wallpaperItem.onclick = () => showPreviewModal(`${paddedI}.jpg`);
+            
+            wallpaperItem.innerHTML = `
+                <div class="image-container">                
+                    <img src="{{ site.baseurl }}/wallpapers/archive/thumbnail/${paddedI}.jpg" 
+                         alt="Archive Wallpaper ${paddedI}">
+                </div>
+                <div class="card-content">
+                    <span class="hint" aria-hidden="true">Click to preview</span>
+                </div>
+            `;
+            grid.appendChild(wallpaperItem);
+        }
+
+        // Update pagination info with ARIA live region
+        const pageInfo = document.getElementById('pageInfo');
+        pageInfo.textContent = `Page ${currentPage} of ${TOTAL_PAGES}`;
+        pageInfo.setAttribute('aria-label', `Currently on page ${currentPage} of ${TOTAL_PAGES}`);
+        
+        // Update pagination buttons with proper ARIA labels
+        const pageButtons = document.getElementById('pageButtons');
+        pageButtons.innerHTML = '';
+        
+        if (currentPage > 1) {
+            const prevButton = document.createElement('a');
+            prevButton.href = '#';
+            prevButton.className = 'page-button';
+            prevButton.innerHTML = '&laquo; Previous';
+            prevButton.setAttribute('aria-label', 'Go to previous page');
+            prevButton.onclick = (e) => {
                 e.preventDefault();
-                navigateToPage(i);
+                navigateToPage(currentPage - 1);
             };
+            pageButtons.appendChild(prevButton);
         }
-        pageButton.textContent = i;
-        pageButtons.appendChild(pageButton);
-    }
-    
-    if (currentPage < TOTAL_PAGES) {
-        const nextButton = document.createElement('a');
-        nextButton.href = '#';
-        nextButton.className = 'page-button';
-        nextButton.innerHTML = 'Next &raquo;';
-        nextButton.onclick = (e) => {
-            e.preventDefault();
-            navigateToPage(currentPage + 1);
-        };
-        pageButtons.appendChild(nextButton);
-    }
-}
-
-function navigateToPage(page) {
-    const url = new URL(window.location);
-    url.searchParams.set('page', page);
-    window.history.pushState({}, '', url);
-    updatePageContent();
-    window.scrollTo(0, 0);
-}
-
-// Initialize page content when the page loads
-document.addEventListener('DOMContentLoaded', updatePageContent);
-
-// Handle browser back/forward buttons
-window.addEventListener('popstate', updatePageContent);
-
-function showPreviewModal(image) {
-    currentImage = image;
-    currentWallpaperIndex = parseInt(image.match(/(\d+)/)[1]) - 1;
-    const previewImage = document.getElementById('previewImage');
-    previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
-    const modal = document.getElementById('previewModal');
-    modal.style.display = 'flex';
-    
-    // Setup download button
-    const downloadButton = modal.querySelector('.size-button');
-    downloadButton.href = `{{ site.baseurl }}/wallpapers/archive/${currentImage}`;
-    downloadButton.removeAttribute('download');
-    
-    // Apply current preference
-    updateDownloadButtons();
-}
-
-function hidePreviewModal() {
-    const modal = document.getElementById('previewModal');
-    modal.style.display = 'none';
-}
-
-// Load user preference for opening in new window
-const openInNewWindow = document.getElementById('openInNewWindow');
-openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
-
-// Save preference when checkbox is changed
-openInNewWindow.addEventListener('change', function() {
-    localStorage.setItem('openInNewWindow', this.checked);
-    updateDownloadButtons();
-});
-
-function updateDownloadButtons() {
-    const sizeButtons = document.querySelectorAll('.size-button');
-    const openInNew = openInNewWindow.checked;
-    
-    sizeButtons.forEach(button => {
-        if (openInNew) {
-            button.target = '_blank';
-            button.removeAttribute('download');
-        } else {
-            button.removeAttribute('target');
-            button.setAttribute('download', currentImage);
+        
+        for (let i = 1; i <= TOTAL_PAGES; i++) {
+            const pageButton = document.createElement(i === currentPage ? 'span' : 'a');
+            pageButton.className = `page-button${i === currentPage ? ' current' : ''}`;
+            if (i !== currentPage) {
+                pageButton.href = '#';
+                pageButton.onclick = (e) => {
+                    e.preventDefault();
+                    navigateToPage(i);
+                };
+            }
+            pageButton.textContent = i;
+            pageButtons.appendChild(pageButton);
         }
+        
+        if (currentPage < TOTAL_PAGES) {
+            const nextButton = document.createElement('a');
+            nextButton.href = '#';
+            nextButton.className = 'page-button';
+            nextButton.innerHTML = 'Next &raquo;';
+            nextButton.onclick = (e) => {
+                e.preventDefault();
+                navigateToPage(currentPage + 1);
+            };
+            pageButtons.appendChild(nextButton);
+        }
+    }
+
+    function navigateToPage(page) {
+        const url = new URL(window.location);
+        url.searchParams.set('page', page);
+        window.history.pushState({}, '', url);
+        updatePageContent();
+        window.scrollTo(0, 0);
+    }
+
+    // Initialize page content when the page loads
+    document.addEventListener('DOMContentLoaded', updatePageContent);
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', updatePageContent);
+
+    function showPreviewModal(image) {
+        currentImage = image;
+        currentWallpaperIndex = parseInt(image.match(/(\d+)/)[1]) - 1;
+        
+        const previewImage = document.getElementById('previewImage');
+        previewImage.src = `{{ site.baseurl }}/wallpapers/archive/${image}`;
+        
+        const modal = document.getElementById('previewModal');
+        modal.style.display = 'flex';
+        modal.hidden = false;
+        
+        // Update ARIA description
+        document.getElementById('currentImageDesc').textContent = `Archive wallpaper ${currentWallpaperIndex + 1}`;
+        
+        // Setup download button with proper ARIA
+        const downloadButton = modal.querySelector('.size-button');
+        downloadButton.href = `{{ site.baseurl }}/wallpapers/archive/${currentImage}`;
+        downloadButton.setAttribute('aria-label', `Download wallpaper ${currentWallpaperIndex + 1}`);
+        
+        // Focus management
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length) {
+            focusableElements[0].focus();
+        }
+        
+        updateDownloadButtons();
+    }
+
+    function hidePreviewModal() {
+        const modal = document.getElementById('previewModal');
+        modal.style.display = 'none';
+    }
+
+    // Load user preference for opening in new window
+    const openInNewWindow = document.getElementById('openInNewWindow');
+    openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
+
+    // Save preference when checkbox is changed
+    openInNewWindow.addEventListener('change', function() {
+        localStorage.setItem('openInNewWindow', this.checked);
+        updateDownloadButtons();
     });
-}
 
-// Close modal when clicking outside
-document.addEventListener('click', function(event) {
-    const previewModal = document.getElementById('previewModal');
-    if (event.target === previewModal) {
-        hidePreviewModal();
+    function updateDownloadButtons() {
+        const sizeButtons = document.querySelectorAll('.size-button');
+        const openInNew = openInNewWindow.checked;
+        
+        sizeButtons.forEach(button => {
+            if (openInNew) {
+                button.target = '_blank';
+                button.removeAttribute('download');
+            } else {
+                button.removeAttribute('target');
+                button.setAttribute('download', currentImage);
+            }
+        });
     }
-});
 
-function showPreviousWallpaper() {
-    if (currentWallpaperIndex > 0) {
-        currentWallpaperIndex--;
-        const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
-        showPreviewModal(`${paddedIndex}.jpg`);
-    }
-}
-
-function showNextWallpaper() {
-    if (currentWallpaperIndex < TOTAL_ITEMS - 1) {
-        currentWallpaperIndex++;
-        const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
-        showPreviewModal(`${paddedIndex}.jpg`);
-    }
-}
-
-// Add keyboard navigation
-document.addEventListener('keydown', function(event) {
-    const modal = document.getElementById('previewModal');
-    if (modal.style.display === 'flex') {
-        if (event.key === 'ArrowLeft' || event.key === 'a') {
-            showPreviousWallpaper();
-        } else if (event.key === 'ArrowRight' || event.key === 'd') {
-            showNextWallpaper();
-        } else if (event.key === 'Escape') {
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const previewModal = document.getElementById('previewModal');
+        if (event.target === previewModal) {
             hidePreviewModal();
         }
+    });
+
+    function showPreviousWallpaper() {
+        if (currentWallpaperIndex > 0) {
+            currentWallpaperIndex--;
+            const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
+            showPreviewModal(`${paddedIndex}.jpg`);
+        }
     }
-});
-</script>
+
+    function showNextWallpaper() {
+        if (currentWallpaperIndex < TOTAL_ITEMS - 1) {
+            currentWallpaperIndex++;
+            const paddedIndex = String(currentWallpaperIndex + 1).padStart(3, '0');
+            showPreviewModal(`${paddedIndex}.jpg`);
+        }
+    }
+
+    // Add keyboard navigation
+    document.addEventListener('keydown', function(event) {
+        const modal = document.getElementById('previewModal');
+        if (modal.style.display === 'flex') {
+            if (event.key === 'ArrowLeft' || event.key === 'a') {
+                showPreviousWallpaper();
+            } else if (event.key === 'ArrowRight' || event.key === 'd') {
+                showNextWallpaper();
+            } else if (event.key === 'Escape') {
+                hidePreviewModal();
+            }
+        }
+    });
+
+    // Add keyboard trap for modal
+    document.getElementById('previewModal').addEventListener('keydown', function(e) {
+        if (this.style.display !== 'flex') return;
+        
+        const focusableElements = this.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        const firstFocusable = focusableElements[0];
+        const lastFocusable = focusableElements[focusableElements.length - 1];
+        
+        if (e.key === 'Tab') {
+            if (e.shiftKey && document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
+            } else if (!e.shiftKey && document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
+        
+        if (e.key === 'Escape') {
+            hidePreviewModal();
+        }
+    });
+    </script>
+</main>

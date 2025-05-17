@@ -172,6 +172,65 @@
             color: white;
             margin-top: 2rem;
         }
+
+        .footer p a {
+            color: white !important;
+            text-decoration: none;
+            transition: text-decoration-color 0.3s;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .footer p a:hover,
+        .footer p a:focus {
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            opacity: 1;
+        }
+
+        .footer p a:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Focus management */
+        *:focus-visible {
+            outline: 3px solid var(--secondary);
+            outline-offset: 2px;
+        }
+
+        .nav a:focus-visible,
+        .button:focus-visible,
+        .theme-toggle:focus-visible {
+            outline-color: #ffffff;
+        }
+
+        [aria-current="page"] {
+            background-color: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        /* Improved color contrast */
+        .hint {
+            color: #595959;
+        }
+
+        .checkbox-label {
+            color: #4a4a4a;
+        }
     </style>
     {% seo %}
     <script>
@@ -230,30 +289,27 @@
         });
     </script>
 </head>
-<body>
-    <header class="header">
+<body>    <header class="header" role="banner">
         <h1>{{ site.title }}</h1>
         <p>{{ site.description }}</p>
     </header>
     
-    <nav class="nav">
-        <a href="{{ site.baseurl }}/">Home</a>
-        <a href="{{ site.baseurl }}/desktop">Desktop</a>
-        <a href="{{ site.baseurl }}/phone">Phone</a>
-        <a href="{{ site.baseurl }}/watch">Watch</a>
-        <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()">
-            <img src="{{ site.baseurl }}/icons/visualstudiocode.png" alt="VS Code" class="vscode-icon">
-            <img src="{{ site.baseurl }}/icons/visualstudio.png" alt="Visual Studio" class="vs-icon">
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <a href="{{ site.baseurl }}/" aria-current="{% if page.url == '/' %}page{% endif %}">Home</a>
+        <a href="{{ site.baseurl }}/desktop" aria-current="{% if page.url == '/desktop.html' %}page{% endif %}">Desktop</a>
+        <a href="{{ site.baseurl }}/phone" aria-current="{% if page.url == '/phone.html' %}page{% endif %}">Phone</a>
+        <a href="{{ site.baseurl }}/watch" aria-current="{% if page.url == '/watch.html' %}page{% endif %}">Watch</a>
+        <button id="theme-toggle" class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle color theme">
+            <img src="{{ site.baseurl }}/icons/visualstudiocode.png" alt="VS Code Theme" class="vscode-icon">
+            <img src="{{ site.baseurl }}/icons/visualstudio.png" alt="Visual Studio Theme" class="vs-icon">
             <span class="toggle-text">Switch to VS Code Blue</span>
         </button>
     </nav>
-    
-    <main class="container">
+      <main class="container" role="main" id="main-content">
         {{ content }}
     </main>
-    
-    <footer class="footer">
-        <p>&copy; {{ site.time | date: '%Y' }} Visual Studio Wallpapers Community. All rights reserved. Official wallpapers &copy; Microsoft {{ site.time | date: '%Y' }}</p>
+      <footer class="footer" role="contentinfo">
+        <p>&copy; {{ site.time | date: '%Y' }} Visual Studio Wallpapers Community by <a href="https://bsky.app/profile/james.montemagno.com" target="_blank" rel="noopener noreferrer" aria-label="Visit James Montemagno's Bluesky profile (opens in new window)">James</a>, <a href="https://bsky.app/profile/scott.hanselman.com" target="_blank" rel="noopener noreferrer" aria-label="Visit Scott Hanselman's Bluesky profile (opens in new window)">Scott</a>, and <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer" aria-label="Learn more about GitHub Copilot (opens in new window)">GitHub Copilot</a>. All rights reserved. Official wallpapers &copy; Microsoft {{ site.time | date: '%Y' }}</p>
     </footer>
 </body>
 </html>

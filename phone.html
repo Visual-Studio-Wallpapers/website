@@ -31,31 +31,33 @@ title: Phone Wallpapers
     </div>
 </div>
 
-<div id="previewModal" class="modal">
-    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()">&lt;</button>
-    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()">&gt;</button>
+<div id="previewModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>
+    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()" aria-label="Show previous wallpaper">&lt;</button>
+    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()" aria-label="Show next wallpaper">&gt;</button>
     <div class="modal-content preview-content">
         <div class="preview-layout">
             <div class="preview-image-container">
-                <img id="previewImage" src="" alt="Wallpaper Preview">
+                <img id="previewImage" src="" alt="Wallpaper Preview" aria-describedby="currentImageDesc">
+                <p id="currentImageDesc" class="sr-only"></p>
             </div>
             <div class="preview-sidebar">
-                <h3>Download Options</h3>
-                <div class="preview-sizes">
-                    <select id="sizeSelector" class="size-selector">
+                <h3 id="previewModalTitle">Download Options</h3>
+                <div class="preview-sizes" role="group" aria-label="Download size options">
+                    <select id="sizeSelector" class="size-selector" aria-label="Select wallpaper size">
                         {% for size in site.data.sizes.phone %}
                             <option value="{{ size }}">{{ size }}</option>
                         {% endfor %}
                     </select>
-                    <a href="#" id="downloadButton" class="button download-button">Download</a>
+                    <a href="#" id="downloadButton" class="button download-button" role="button">Download</a>
                 </div>
                 <div class="preview-settings">
                     <label class="checkbox-label">
-                        <input type="checkbox" id="openInNewWindow" checked>
+                        <input type="checkbox" id="openInNewWindow" checked aria-describedby="openInNewWindowDesc">
                         Open in new window
                     </label>
+                    <span id="openInNewWindowDesc" class="sr-only">Choose whether to open downloads in a new window or download directly</span>
                 </div>
-                <button class="button close-button" onclick="hidePreviewModal()">Close</button>
+                <button class="button close-button" onclick="hidePreviewModal()" aria-label="Close preview">Close</button>
             </div>
         </div>
     </div>
@@ -368,34 +370,33 @@ function updateDownloadButtons() {
     });
 }
 
+let focusedElementBeforeModal;
+const focusableElements = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 function showPreviewModal(image) {
+    // Store last focused element
+    focusedElementBeforeModal = document.activeElement;
+    
     currentImage = image;
+    currentWallpaperIndex = wallpapers.indexOf(image);
     const previewImage = document.getElementById('previewImage');
+    
     // Using the largest size for preview
     previewImage.src = `{{ site.baseurl }}/wallpapers/phone/430x932/${image}`;
     const modal = document.getElementById('previewModal');
+    modal.hidden = false;
     modal.style.display = 'flex';
     
-    // Setup download buttons
-    const sizeButtons = modal.querySelectorAll('.size-button');
-    sizeButtons.forEach(button => {
-        const size = button.dataset.size;
-        const downloadUrl = `{{ site.baseurl }}/wallpapers/phone/${size}/${currentImage}`;
-        button.href = downloadUrl;
-        button.removeAttribute('download');  // Remove download attribute to open in browser
-    });
+    // Set aria description
+    document.getElementById('currentImageDesc').textContent = `Phone wallpaper ${image.split('.')[0]}`;
     
-    // Apply current preference
-    updateDownloadButtons();
-    
+    // Setup size selector and download button
     const sizeSelector = document.getElementById('sizeSelector');
     const downloadButton = document.getElementById('downloadButton');
-    const openInNewWindow = document.getElementById('openInNewWindow');
 
     // Set preview image
     previewImage.src = `wallpapers/phone/${sizeSelector.value}/${image}`;
-    modal.style.display = 'flex';
-
+    
     // Update download button URL when size changes
     sizeSelector.onchange = function() {
         previewImage.src = `wallpapers/phone/${sizeSelector.value}/${image}`;
@@ -406,25 +407,52 @@ function showPreviewModal(image) {
     openInNewWindow.onchange = updateDownloadUrl;
 
     // Initial download URL setup
-    updateDownloadUrl();    function updateDownloadUrl() {
-        const selectedSize = sizeSelector.value;
-        const url = `{{ site.baseurl }}/wallpapers/phone/${selectedSize}/${image}`;
-        downloadButton.href = url;
-        if (openInNewWindow.checked) {
-            downloadButton.target = '_blank';
-            downloadButton.removeAttribute('download');
-        } else {
-            downloadButton.removeAttribute('target');
-            const filename = `phone_${selectedSize}_${image}`;
-            downloadButton.setAttribute('download', filename);
-        }
-    }
+    updateDownloadUrl();
+    
+    // Focus first focusable element
+    const focusable = modal.querySelectorAll(focusableElements);
+    if (focusable.length) focusable[0].focus();
 }
 
 function hidePreviewModal() {
     const modal = document.getElementById('previewModal');
     modal.style.display = 'none';
+    modal.hidden = true;
+    
+    // Restore focus
+    if (focusedElementBeforeModal) {
+        focusedElementBeforeModal.focus();
+    }
 }
+
+// Add focus trap to modal
+document.getElementById('previewModal').addEventListener('keydown', function(e) {
+    if (this.style.display !== 'flex') return;
+    
+    const focusable = this.querySelectorAll(focusableElements);
+    const firstFocusable = focusable[0];
+    const lastFocusable = focusable[focusable.length - 1];
+    
+    // Handle tab key
+    if (e.key === 'Tab') {
+        if (e.shiftKey) {
+            if (document.activeElement === firstFocusable) {
+                e.preventDefault();
+                lastFocusable.focus();
+            }
+        } else {
+            if (document.activeElement === lastFocusable) {
+                e.preventDefault();
+                firstFocusable.focus();
+            }
+        }
+    }
+    
+    // Handle escape key
+    if (e.key === 'Escape') {
+        hidePreviewModal();
+    }
+});
 
 function showDownloadOptions(image) {
     currentImage = image;

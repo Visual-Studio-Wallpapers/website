@@ -3,36 +3,40 @@ layout: default
 title: Home
 ---
 
-<div class="hero">
-    <h2>Choose Your Device</h2>    <div class="grid">        <div class="card" onclick="window.location.href='{{ site.baseurl }}/desktop'">            
-            <div class="image-container">
-                <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/001.jpg" alt="Desktop Wallpapers">
+<main role="main">
+    <div class="hero">
+        <h2 id="device-selection-heading">Choose Your Device</h2>
+        <div class="grid" role="list" aria-labelledby="device-selection-heading">
+            <div class="card" onclick="window.location.href='{{ site.baseurl }}/desktop'" role="listitem" tabindex="0" aria-label="Browse desktop wallpapers">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/001.jpg" alt="Preview of desktop wallpapers collection">
+                </div>
+                <div class="card-content">
+                    <h3>Desktop Wallpapers 🖥️</h3>
+                    <span class="hint" aria-hidden="true">Click to browse wallpapers</span>
+                </div>
             </div>
-            <div class="card-content">                <h3>Desktop Wallpapers 🖥️</h3>
-                <span class="hint">Click to browse wallpapers</span>
+            
+            <div class="card" onclick="window.location.href='{{ site.baseurl }}/phone'" role="listitem" tabindex="0" aria-label="Browse phone wallpapers">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/phone/320x568/002.jpg" alt="Preview of phone wallpapers collection">
+                </div>
+                <div class="card-content">
+                    <h3>Phone Wallpapers 📱</h3>
+                    <span class="hint" aria-hidden="true">Click to browse wallpapers</span>
+                </div>
+            </div>
+            
+            <div class="card" onclick="window.location.href='{{ site.baseurl }}/watch'" role="listitem" tabindex="0" aria-label="Browse watch wallpapers">
+                <div class="image-container">
+                    <img src="{{ site.baseurl }}/wallpapers/watch/368x448/003.jpg" alt="Preview of watch wallpapers collection">
+                </div>
+                <div class="card-content">
+                    <h3>Watch Wallpapers ⌚</h3>
+                    <span class="hint" aria-hidden="true">Click to browse wallpapers</span>
+                </div>
             </div>
         </div>
-        
-        <div class="card" onclick="window.location.href='{{ site.baseurl }}/phone'">
-            <div class="image-container">
-                <img src="{{ site.baseurl }}/wallpapers/phone/320x568/002.jpg" alt="Phone Wallpapers">
-            </div>
-            <div class="card-content">
-                <h3>Phone Wallpapers 📱</h3>
-                <span class="hint">Click to browse wallpapers</span>
-            </div>
-        </div>
-        
-        <div class="card" onclick="window.location.href='{{ site.baseurl }}/watch'">
-            <div class="image-container">
-                <img src="{{ site.baseurl }}/wallpapers/watch/368x448/003.jpg" alt="Watch Wallpapers">
-            </div>
-            <div class="card-content">
-                <h3>Watch Wallpapers ⌚</h3>
-                <span class="hint">Click to browse wallpapers</span>
-            </div>
-        </div>
-    </div>
 
 <style>
 .image-container {
@@ -95,5 +99,6 @@ title: Home
 </div>
 
 <div class="archive-link">
-    <a href="{{ site.baseurl }}/archive">explore the community archives</a>
+    <a href="{{ site.baseurl }}/archive" aria-label="View community archive wallpapers">explore the community archives</a>
 </div>
+</main>
