@@ -5,8 +5,13 @@ title: Watch Wallpapers
 
 <h2>Watch Wallpapers</h2>
 
-<div class="grid" id="wallpapers">    {% for image in site.static_files %}    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
-            <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+<div class="grid" id="wallpapers" role="list" aria-label="Watch wallpapers grid">    {% for image in site.static_files %}    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
+            <div class="card" 
+                 role="listitem"
+                 tabindex="0"
+                 onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')"
+                 onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showPreviewModal('{{ image.basename }}{{ image.extname }}'); }"
+                 aria-label="Preview watch wallpaper {{ image.basename }}">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/watch/368x448/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
                 </div>                

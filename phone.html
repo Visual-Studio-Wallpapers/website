@@ -5,10 +5,15 @@ title: Phone Wallpapers
 
 <h2>Phone Wallpapers</h2>
 
-<div class="grid" id="wallpapers">
+<div class="grid" id="wallpapers" role="list" aria-label="Phone wallpapers grid">
     {% for image in site.static_files %}
     {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            
-    <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+    <div class="card" 
+         role="listitem"
+         tabindex="0"
+         onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')"
+         onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showPreviewModal('{{ image.basename }}{{ image.extname }}'); }"
+         aria-label="Preview phone wallpaper {{ image.basename }}">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/phone/320x568/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
                 </div>                <div class="card-content">

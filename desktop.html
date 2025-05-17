@@ -5,34 +5,49 @@ title: Desktop Wallpapers
 
 <h2>Desktop Wallpapers</h2>
 
-<div class="grid" id="wallpapers">    {% for image in site.static_files %}
+<div class="grid" id="wallpapers" role="list" aria-label="Desktop wallpapers grid">    
+    {% for image in site.static_files %}
     {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            
-    <div class="card" onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')">
+    <div class="card" 
+         role="listitem" 
+         tabindex="0" 
+         onclick="showPreviewModal('{{ image.basename }}{{ image.extname }}')"
+         onkeydown="if(event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showPreviewModal('{{ image.basename }}{{ image.extname }}'); }"
+         aria-label="Preview wallpaper {{ image.basename }}">
                 <div class="image-container">
-                    <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/{{ image.basename }}{{ image.extname }}" alt="Wallpaper {{ image.basename }}">
-                </div>                <div class="card-content">
-                    <span class="hint">Click to preview</span>
+                    <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/{{ image.basename }}{{ image.extname }}" 
+                         alt="Desktop wallpaper {{ image.basename }}"
+                         aria-hidden="true">
+                </div>                
+                <div class="card-content">
+                    <span class="hint" aria-hidden="true">Press Enter or click to preview</span>
                 </div>
             </div>
         {% endif %}
     {% endfor %}
 </div>
 
-<div id="downloadModal" class="modal">
+<div id="downloadModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
     <div class="modal-content">
-        <h3>Select Size</h3>
-        <div class="size-buttons">
+        <h3 id="downloadModalTitle">Select Size</h3>
+        <div class="size-buttons" role="group" aria-label="Wallpaper size options">
             {% for size in site.data.sizes.desktop %}
-                <a href="#" class="button size-button" data-size="{{ size }}" target="_blank">{{ size }}</a>
+                <a href="#" 
+                   class="button size-button" 
+                   data-size="{{ size }}" 
+                   target="_blank"
+                   role="button"
+                   aria-label="Download {{ size }} size">{{ size }}</a>
             {% endfor %}
         </div>
-        <button class="button close-button" onclick="hideModal()">Close</button>
+        <button class="button close-button" 
+                onclick="hideModal()" 
+                aria-label="Close size selection">Close</button>
     </div>
 </div>
 
-<div id="previewModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>
-    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()" aria-label="Show previous wallpaper">&lt;</button>
-    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()" aria-label="Show next wallpaper">&gt;</button>
+<div id="previewModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle" hidden>    <button class="nav-arrow prev-arrow" onclick="showPreviousWallpaper()" aria-label="Show previous wallpaper (Left arrow key)">&lt;</button>
+    <button class="nav-arrow next-arrow" onclick="showNextWallpaper()" aria-label="Show next wallpaper (Right arrow key)">&gt;</button>
     <div class="modal-content preview-content">
         <div class="preview-layout">
             <div class="preview-image-container">
@@ -258,12 +273,48 @@ title: Desktop Wallpapers
     background: rgba(0, 0, 0, 0.5);
 }
 
+.nav-arrow:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .prev-arrow {
     left: 20px;
 }
 
 .next-arrow {
     right: 20px;
+}
+
+.card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.button:focus-visible,
+.size-button:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.checkbox-label:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .card:hover,
+    .card:focus-visible {
+        transition: none;
+        transform: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -279,6 +330,37 @@ title: Desktop Wallpapers
     
     .next-arrow {
         right: 10px;
+    }
+}
+
+/* Focus management */
+.card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.nav-arrow:focus-visible,
+.button:focus-visible,
+.size-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.checkbox-label:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .card:hover,
+    .card:focus-visible {
+        transition: none;
+        transform: none;
     }
 }
 </style>

@@ -223,6 +223,47 @@
             font-weight: 600;
         }
 
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            
+            .card:hover,
+            .card:focus-visible {
+                transform: none !important;
+            }
+        }
+
+        .nav a:focus-visible,
+        .button:focus-visible,
+        .theme-toggle:focus-visible,
+        .card:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
         /* Improved color contrast */
         .hint {
             color: #595959;
@@ -289,7 +330,9 @@
         });
     </script>
 </head>
-<body>    <header class="header" role="banner">
+<body>    
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="header" role="banner">
         <h1>{{ site.title }}</h1>
         <p>{{ site.description }}</p>
     </header>
