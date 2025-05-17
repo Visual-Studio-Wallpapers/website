@@ -500,9 +500,7 @@ title: Community Archive
     openInNewWindow.addEventListener('change', function() {
         localStorage.setItem('openInNewWindow', this.checked);
         updateDownloadButtons();
-    });
-
-    function updateDownloadButtons() {
+    });    function updateDownloadButtons() {
         const sizeButtons = document.querySelectorAll('.size-button');
         const openInNew = openInNewWindow.checked;
         
@@ -512,7 +510,7 @@ title: Community Archive
                 button.removeAttribute('download');
             } else {
                 button.removeAttribute('target');
-                button.setAttribute('download', currentImage);
+                button.setAttribute('download', `community_${currentImage}`);
             }
         });
     }

@@ -348,6 +348,23 @@ title: Phone Wallpapers
 <script>
 let currentImage = '';
 
+function updateDownloadUrl() {
+    const downloadButton = document.getElementById('downloadButton');
+    const size = document.getElementById('sizeSelector').value;
+    const downloadUrl = `wallpapers/phone/${size}/${currentImage}`;
+    
+    if (openInNewWindow.checked) {
+        downloadButton.target = '_blank';
+        downloadButton.removeAttribute('download');
+    } else {
+        downloadButton.removeAttribute('target');
+        const newFileName = `phone_${size}_${currentImage}`;
+        downloadButton.setAttribute('download', newFileName);
+    }
+    
+    downloadButton.href = downloadUrl;
+}
+
 // Load user preference for opening in new window
 const openInNewWindow = document.getElementById('openInNewWindow');
 openInNewWindow.checked = localStorage.getItem('openInNewWindow') !== 'false'; // Default to true
@@ -357,6 +374,23 @@ openInNewWindow.addEventListener('change', function() {
     localStorage.setItem('openInNewWindow', this.checked);
     updateDownloadButtons();
 });
+
+function updateDownloadUrl() {
+    const downloadButton = document.getElementById('downloadButton');
+    const size = document.getElementById('sizeSelector').value;
+    const downloadUrl = `wallpapers/phone/${size}/${currentImage}`;
+    
+    if (openInNewWindow.checked) {
+        downloadButton.target = '_blank';
+        downloadButton.removeAttribute('download');
+    } else {
+        downloadButton.removeAttribute('target');
+        const newFileName = `phone_${size}_${currentImage}`;
+        downloadButton.setAttribute('download', newFileName);
+    }
+    
+    downloadButton.href = downloadUrl;
+}
 
 function updateDownloadButtons() {
     const sizeButtons = document.querySelectorAll('.size-button');
@@ -490,6 +524,23 @@ document.addEventListener('click', function(event) {
         hidePreviewModal();
     }
 });
+
+function updateDownloadUrl() {
+    const downloadButton = document.getElementById('downloadButton');
+    const size = document.getElementById('sizeSelector').value;
+    const downloadUrl = `wallpapers/phone/${size}/${currentImage}`;
+    
+    if (openInNewWindow.checked) {
+        downloadButton.target = '_blank';
+        downloadButton.removeAttribute('download');
+    } else {
+        downloadButton.removeAttribute('target');
+        const newFileName = `phone_${size}_${currentImage}`;
+        downloadButton.setAttribute('download', newFileName);
+    }
+    
+    downloadButton.href = downloadUrl;
+}
 
 let currentWallpaperIndex = 0;
 const wallpapers = [];
