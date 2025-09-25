@@ -5,7 +5,16 @@ title: Watch Wallpapers
 
 <h2>Watch Wallpapers</h2>
 
-<div class="grid" id="wallpapers" role="list" aria-label="Watch wallpapers grid">    {% for image in site.static_files %}    {% if image.path contains 'wallpapers/watch/368x448' and image.extname == '.jpg' %}
+<div class="grid" id="wallpapers" role="list" aria-label="Watch wallpapers grid">
+    {% assign all_images = site.static_files | where: "extname", ".jpg" %}
+    {% assign watch_images = "" | split: "" %}
+    {% for image in all_images %}
+        {% if image.path contains 'wallpapers/watch/368x448' %}
+            {% assign watch_images = watch_images | push: image %}
+        {% endif %}
+    {% endfor %}
+    {% assign watch_images = watch_images | sort: "basename" | reverse %}
+    {% for image in watch_images %}
             <div class="card" 
                  role="listitem"
                  tabindex="0"
@@ -19,7 +28,6 @@ title: Watch Wallpapers
                     <span class="hint">Click to preview</span>
                 </div>
             </div>
-        {% endif %}
     {% endfor %}
 </div>
 
