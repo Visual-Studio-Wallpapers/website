@@ -274,6 +274,15 @@
         }
     </style>
     {% seo %}
+    
+    <!-- Social Media Meta Tags -->
+    {% if page.social_image %}
+        <meta property="og:image" content="{{ site.url }}{{ site.baseurl }}{{ page.social_image }}">
+        <meta name="twitter:image" content="{{ site.url }}{{ site.baseurl }}{{ page.social_image }}">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta property="og:image:alt" content="{{ page.social_image_alt | default: 'Visual Studio Wallpaper' }}">
+        <meta name="twitter:image:alt" content="{{ page.social_image_alt | default: 'Visual Studio Wallpaper' }}">
+    {% endif %}
     <script>
         const themes = {
             vs_purple: {
