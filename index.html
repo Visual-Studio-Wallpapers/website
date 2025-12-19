@@ -8,43 +8,95 @@ social_image_alt: Preview of Visual Studio wallpapers collection for desktop
 <main role="main">
     <div class="hero">
         <h2 id="device-selection-heading">Choose Your Device</h2>
-        <div class="grid" role="list" aria-labelledby="device-selection-heading">
-            <div class="card" onclick="window.location.href='{{ site.baseurl }}/desktop'" role="listitem" tabindex="0" aria-label="Browse desktop wallpapers">
+        <p class="hero-subtitle">Beautiful wallpapers crafted for every screen</p>
+        <div class="grid device-grid" role="list" aria-labelledby="device-selection-heading">
+            <div class="card device-card" onclick="window.location.href='{{ site.baseurl }}/desktop'" role="listitem" tabindex="0" aria-label="Browse desktop wallpapers">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/desktop/thumbnails/022.jpg" alt="Preview of desktop wallpapers collection">
-                </div>                <div class="card-content">
-                    <h3>Desktop Wallpapers 🖥️</h3>
-                    <span class="hint" aria-hidden="true">Press Enter or click to browse wallpapers</span>
+                    <div class="card-overlay">
+                        <span class="view-btn">View Collection →</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h3>Desktop Wallpapers</h3>
+                    <p class="device-icon">🖥️</p>
+                    <span class="hint" aria-hidden="true">4K, Ultrawide & more</span>
                 </div>
             </div>
             
-            <div class="card" onclick="window.location.href='{{ site.baseurl }}/phone'" role="listitem" tabindex="0" aria-label="Browse phone wallpapers">
+            <div class="card device-card" onclick="window.location.href='{{ site.baseurl }}/phone'" role="listitem" tabindex="0" aria-label="Browse phone wallpapers">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/phone/320x568/023.jpg" alt="Preview of phone wallpapers collection">
+                    <div class="card-overlay">
+                        <span class="view-btn">View Collection →</span>
+                    </div>
                 </div>
                 <div class="card-content">
-                    <h3>Phone Wallpapers 📱</h3>
-                    <span class="hint" aria-hidden="true">Click to browse wallpapers</span>
+                    <h3>Phone Wallpapers</h3>
+                    <p class="device-icon">📱</p>
+                    <span class="hint" aria-hidden="true">iPhone & Android sizes</span>
                 </div>
             </div>
             
-            <div class="card" onclick="window.location.href='{{ site.baseurl }}/watch'" role="listitem" tabindex="0" aria-label="Browse watch wallpapers">
+            <div class="card device-card" onclick="window.location.href='{{ site.baseurl }}/watch'" role="listitem" tabindex="0" aria-label="Browse watch wallpapers">
                 <div class="image-container">
                     <img src="{{ site.baseurl }}/wallpapers/watch/368x448/024.jpg" alt="Preview of watch wallpapers collection">
+                    <div class="card-overlay">
+                        <span class="view-btn">View Collection →</span>
+                    </div>
                 </div>
                 <div class="card-content">
-                    <h3>Watch Wallpapers ⌚</h3>
-                    <span class="hint" aria-hidden="true">Click to browse wallpapers</span>
+                    <h3>Watch Wallpapers</h3>
+                    <p class="device-icon">⌚</p>
+                    <span class="hint" aria-hidden="true">Apple Watch & more</span>
                 </div>
             </div>
         </div>
 
 <style>
+.hero {
+    text-align: center;
+    padding: 1rem 0 2rem;
+}
+
+.hero-subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-top: -1rem;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+}
+
+.device-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.device-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--card-bg);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.device-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
 .image-container {
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 16/10;
     overflow: hidden;
-    border-radius: 15px 15px 0 0;
+    position: relative;
 }
 
 .image-container img {
@@ -52,55 +104,118 @@ social_image_alt: Preview of Visual Studio wallpapers collection for desktop
     height: 100%;
     object-fit: cover;
     object-position: center;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.device-card:hover .image-container img {
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(104, 33, 122, 0.8) 0%, rgba(0, 122, 204, 0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.device-card:hover .card-overlay {
+    opacity: 1;
+}
+
+.view-btn {
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    backdrop-filter: blur(10px);
+    transform: translateY(20px);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.device-card:hover .view-btn {
+    transform: translateY(0);
+}
+
+.device-card .card-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.device-card .card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.device-icon {
+    font-size: 2rem;
+    margin: 0.5rem 0;
 }
 
 .hint {
-    color: #666;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     opacity: 0.8;
-}
-
-.card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    border-radius: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    padding: 1rem;
 }
 
 .archive-link {
     text-align: center;
     margin-top: 4rem;
     padding-bottom: 2rem;
-    opacity: 0.7;
 }
 
 .archive-link a {
-    color: #666;
+    color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    border: 2px solid rgba(104, 33, 122, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
 }
 
 .archive-link a:hover {
-    text-decoration: underline;
-    opacity: 1;
+    border-color: var(--primary);
+    color: var(--primary);
+    background: rgba(104, 33, 122, 0.05);
+    transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .device-card,
+    .device-card:hover,
+    .image-container img,
+    .card-overlay,
+    .view-btn {
+        transition: none;
+        transform: none;
+    }
+    
+    .device-card:hover .card-overlay {
+        opacity: 1;
+    }
+    
+    .device-card:hover .image-container img {
+        transform: none;
+    }
 }
 </style>
 </div>
 
 <div class="archive-link">
-    <a href="{{ site.baseurl }}/archive" aria-label="View community archive wallpapers">explore the community archives</a>
+    <a href="{{ site.baseurl }}/archive" aria-label="View community archive wallpapers">✨ Explore the Community Archives</a>
 </div>
 </main>
 
