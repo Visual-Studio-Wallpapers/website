@@ -1,13 +1,22 @@
 ---
 layout: default
 title: Desktop Wallpapers
+social_image: /wallpapers/desktop/thumbnails/024.jpg
+social_image_alt: Desktop wallpaper from Visual Studio wallpapers collection
 ---
 
 <h2>Desktop Wallpapers</h2>
 
 <div class="grid" id="wallpapers" role="list" aria-label="Desktop wallpapers grid">    
-    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            
+    {% assign all_images = site.static_files | where: "extname", ".jpg" %}
+    {% assign desktop_images = "" | split: "" %}
+    {% for image in all_images %}
+        {% if image.path contains 'wallpapers/desktop/thumbnails' %}
+            {% assign desktop_images = desktop_images | push: image %}
+        {% endif %}
+    {% endfor %}
+    {% assign desktop_images = desktop_images | sort: "basename" | reverse %}
+    {% for image in desktop_images %}
     <div class="card" 
          role="listitem" 
          tabindex="0" 
@@ -23,7 +32,6 @@ title: Desktop Wallpapers
                     <span class="hint" aria-hidden="true">Press Enter or click to preview</span>
                 </div>
             </div>
-        {% endif %}
     {% endfor %}
 </div>
 
@@ -384,10 +392,8 @@ let currentIndex = 0;
 
 // Preload wallpapers for navigation
 function preloadWallpapers() {
-    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/desktop/thumbnails' and image.extname == '.jpg' %}            
+    {% for image in desktop_images %}          
     wallpapers.push('{{ image.basename }}{{ image.extname }}');
-    {% endif %}
     {% endfor %}
 }
 

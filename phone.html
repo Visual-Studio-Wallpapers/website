@@ -1,13 +1,22 @@
 ---
 layout: default
 title: Phone Wallpapers
+social_image: /wallpapers/phone/320x568/024.jpg
+social_image_alt: Phone wallpaper from Visual Studio wallpapers collection
 ---
 
 <h2>Phone Wallpapers</h2>
 
 <div class="grid" id="wallpapers" role="list" aria-label="Phone wallpapers grid">
-    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            
+    {% assign all_images = site.static_files | where: "extname", ".jpg" %}
+    {% assign phone_images = "" | split: "" %}
+    {% for image in all_images %}
+        {% if image.path contains 'wallpapers/phone/320x568' %}
+            {% assign phone_images = phone_images | push: image %}
+        {% endif %}
+    {% endfor %}
+    {% assign phone_images = phone_images | sort: "basename" | reverse %}
+    {% for image in phone_images %}            
     <div class="card" 
          role="listitem"
          tabindex="0"
@@ -20,7 +29,6 @@ title: Phone Wallpapers
                     <span class="hint">Click to preview</span>
                 </div>
             </div>
-        {% endif %}
     {% endfor %}
 </div>
 
@@ -549,10 +557,8 @@ const wallpapers = [];
 function preloadWallpapers() {
     const size = document.getElementById('sizeSelector').value;
     const baseUrl = `{{ site.baseurl }}/wallpapers/phone/${size}/`;
-    {% for image in site.static_files %}
-    {% if image.path contains 'wallpapers/phone/320x568' and image.extname == '.jpg' %}            
+    {% for image in phone_images %}          
     wallpapers.push('{{ image.basename }}{{ image.extname }}');
-    {% endif %}
     {% endfor %}
 }
 
