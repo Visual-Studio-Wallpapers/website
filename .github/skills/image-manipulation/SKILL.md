@@ -1,7 +1,7 @@
 ---
 name: image-manipulation
-description: Process and manipulate images using ImageMagick. Supports resizing, format conversion, batch processing, and retrieving image metadata. Use when working with images, creating thumbnails, resizing wallpapers, or performing batch image operations.
-compatibility: Requires ImageMagick installed and available as `magick` (recommended: on PATH). Examples assume Windows + PowerShell.
+description: "Process and manipulate images using ImageMagick. Supports resizing, format conversion, batch processing, and retrieving image metadata. Use when working with images, creating thumbnails, resizing wallpapers, or performing batch image operations."
+compatibility: "Requires ImageMagick installed and available as `magick` (recommended: on PATH). Examples assume Windows + PowerShell."
 ---
 
 # Image Manipulation with ImageMagick
