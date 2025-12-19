@@ -82,6 +82,10 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .nav a {
@@ -341,11 +345,6 @@
 </head>
 <body>    
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <header class="header" role="banner">
-        <h1>{{ site.title }}</h1>
-        <p>{{ site.description }}</p>
-    </header>
-    
     <nav class="nav" role="navigation" aria-label="Main navigation">
         <a href="{{ site.baseurl }}/" aria-current="{% if page.url == '/' %}page{% endif %}">Home</a>
         <a href="{{ site.baseurl }}/desktop" aria-current="{% if page.url == '/desktop.html' %}page{% endif %}">Desktop</a>
@@ -357,6 +356,10 @@
             <span class="toggle-text">Switch to VS Code Blue</span>
         </button>
     </nav>
+    <header class="header" role="banner">
+        <h1>{{ site.title }}</h1>
+        <p>{{ site.description }}</p>
+    </header>
       <main class="container" role="main" id="main-content">
         {{ content }}
     </main>
