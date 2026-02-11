@@ -1,12 +1,24 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Serve Jekyll Site",
-			"type": "shell",
-			"command": "bundle exec jekyll serve",
-			"isBackground": true,
-			"problemMatcher": []
-		}
-	]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Blazor WASM",
+            "type": "process",
+            "command": "dotnet",
+            "args": ["watch", "run"],
+            "isBackground": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Build",
+            "type": "process",
+            "command": "dotnet",
+            "args": ["build"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
 }

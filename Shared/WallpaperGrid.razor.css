@@ -1,0 +1,124 @@
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 1rem;
+}
+
+.wallpaper-grid.phone-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.wallpaper-grid.watch-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.card {
+    background: var(--card-bg, rgba(255, 255, 255, 0.95));
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+.image-container {
+    width: 100%;
+    overflow: hidden;
+    border-radius: 20px 20px 0 0;
+}
+
+.aspect-desktop {
+    aspect-ratio: 16/9;
+}
+
+.aspect-desktop-wide {
+    aspect-ratio: 16/10;
+}
+
+.aspect-phone {
+    aspect-ratio: 9/16;
+}
+
+.card-content {
+    padding: 1rem;
+    text-align: center;
+}
+
+.hint {
+    color: var(--text-secondary, #4a4a6a);
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Phone grid: narrower cards on mobile */
+.phone-grid .card {
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.card:focus-visible {
+    outline: 3px solid var(--primary, #68217a);
+    outline-offset: 2px;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card,
+    .card:hover,
+    .card:focus-visible {
+        transition: none;
+        transform: none;
+    }
+
+    .card:hover img {
+        transform: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .phone-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .phone-grid .card {
+        max-width: 180px;
+    }
+
+    .phone-grid .card-content {
+        padding: 0.75rem;
+    }
+
+    .phone-grid .hint {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .phone-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+}

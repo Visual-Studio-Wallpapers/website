@@ -1,0 +1,206 @@
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 95%;
+    max-width: 400px;
+}
+
+.preview-content {
+    width: 95%;
+    max-width: 1200px;
+    max-height: 95vh;
+    padding: 1rem;
+}
+
+::deep .preview-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-direction: column;
+    position: relative;
+}
+
+::deep .preview-image-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+::deep .preview-image-container img {
+    width: 100%;
+    height: auto;
+    max-height: 600px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+::deep .preview-sidebar {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+::deep .preview-sidebar h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+::deep .preview-sizes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+::deep .preview-sizes .size-button {
+    width: 100%;
+}
+
+::deep .preview-settings {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+::deep .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+::deep .checkbox-label input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+::deep .size-buttons {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+::deep .size-button {
+    display: block;
+    width: 100%;
+}
+
+::deep .size-selector {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%;
+    background-color: white;
+}
+
+::deep .download-button {
+    width: 100%;
+    text-align: center;
+}
+
+.close-button {
+    background-color: #666;
+}
+
+.close-button:hover {
+    background-color: #888;
+}
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.nav-arrow:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.nav-arrow:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.prev-arrow {
+    left: 20px;
+}
+
+.next-arrow {
+    right: 20px;
+}
+
+@media (min-width: 768px) {
+    .modal-content {
+        padding: 2rem;
+    }
+
+    ::deep .preview-image-container img {
+        max-height: 95vh;
+    }
+}
+
+@media (min-width: 1024px) {
+    ::deep .preview-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    ::deep .preview-image-container {
+        margin: 0;
+    }
+
+    ::deep .preview-sidebar {
+        width: 250px;
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-arrow {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+
+    .prev-arrow {
+        left: 10px;
+    }
+
+    .next-arrow {
+        right: 10px;
+    }
+}

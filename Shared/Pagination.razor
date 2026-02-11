@@ -1,0 +1,45 @@
+<nav class="pagination-controls" role="navigation" aria-label="@AriaLabel">
+    <span class="page-info" aria-live="polite" aria-label="@($"Currently on page {CurrentPage} of {TotalPages}")">
+        Page @CurrentPage of @TotalPages
+    </span>
+    <div class="page-buttons" role="group" aria-label="Pagination">
+        @if (CurrentPage > 1)
+        {
+            <a href="" class="page-button" @onclick="() => NavigateToPage(CurrentPage - 1)"
+               @onclick:preventDefault="true" aria-label="Go to previous page">&laquo; Previous</a>
+        }
+        @for (int i = 1; i <= TotalPages; i++)
+        {
+            var pageNum = i;
+            if (pageNum == CurrentPage)
+            {
+                <span class="page-button current" aria-current="page">@pageNum</span>
+            }
+            else
+            {
+                <a href="" class="page-button" @onclick="() => NavigateToPage(pageNum)"
+                   @onclick:preventDefault="true" aria-label="@($"Go to page {pageNum}")">@pageNum</a>
+            }
+        }
+        @if (CurrentPage < TotalPages)
+        {
+            <a href="" class="page-button" @onclick="() => NavigateToPage(CurrentPage + 1)"
+               @onclick:preventDefault="true" aria-label="Go to next page">Next &raquo;</a>
+        }
+    </div>
+</nav>
+
+@code {
+    [Parameter] public int CurrentPage { get; set; } = 1;
+    [Parameter] public int TotalPages { get; set; } = 1;
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
+    [Parameter] public string AriaLabel { get; set; } = "Wallpaper pages navigation";
+
+    private async Task NavigateToPage(int page)
+    {
+        if (page >= 1 && page <= TotalPages)
+        {
+            await OnPageChanged.InvokeAsync(page);
+        }
+    }
+}

@@ -1,0 +1,61 @@
+@inherits LayoutComponentBase
+@inject VisualStudioWallpapers.Services.ThemeService ThemeService
+@inject NavigationManager Navigation
+@implements IDisposable
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+    <NavLink href="" Match="NavLinkMatch.All" aria-label="Home">Home</NavLink>
+    <NavLink href="desktop" aria-label="Desktop wallpapers">Desktop</NavLink>
+    <NavLink href="phone" aria-label="Phone wallpapers">Phone</NavLink>
+    <NavLink href="watch" aria-label="Watch wallpapers">Watch</NavLink>
+    <button id="theme-toggle" class="theme-toggle" @onclick="ToggleTheme" aria-label="Toggle color theme">
+        <img src="icons/visualstudiocode.png" alt="VS Code Theme" class="vscode-icon"
+             style="display:@(ThemeService.ShowVsCodeIcon ? "inline-block" : "none")">
+        <img src="icons/visualstudio.png" alt="Visual Studio Theme" class="vs-icon"
+             style="display:@(ThemeService.ShowVsIcon ? "inline-block" : "none")">
+        <span class="toggle-text">Switch to @ThemeService.NextThemeName</span>
+    </button>
+</nav>
+<header class="header" role="banner">
+    <div class="header-content">
+        <h1>Visual Studio Wallpapers</h1>
+        <p>Beautiful wallpapers for your Desktop, Phone, and Watch</p>
+    </div>
+</header>
+<main class="container" role="main" id="main-content">
+    @Body
+</main>
+<footer class="footer" role="contentinfo">
+    <p>&copy; @DateTime.Now.Year Visual Studio Wallpapers Community by <a href="https://bsky.app/profile/james.montemagno.com" target="_blank" rel="noopener noreferrer" aria-label="Visit James Montemagno's Bluesky profile (opens in new window)">James</a>, <a href="https://bsky.app/profile/scott.hanselman.com" target="_blank" rel="noopener noreferrer" aria-label="Visit Scott Hanselman's Bluesky profile (opens in new window)">Scott</a>, and <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer" aria-label="Learn more about GitHub Copilot (opens in new window)">GitHub Copilot</a>. All rights reserved. Official wallpapers &copy; Microsoft @DateTime.Now.Year</p>
+</footer>
+
+@code {
+    private bool _initialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ThemeService.InitializeAsync();
+            ThemeService.OnThemeChanged += OnThemeChanged;
+            _initialized = true;
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        await ThemeService.ToggleTheme();
+    }
+
+    private void OnThemeChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= OnThemeChanged;
+    }
+}

@@ -1,0 +1,68 @@
+@page "/phone"
+@inject VisualStudioWallpapers.Data.WallpaperManifestService ManifestService
+
+<PageTitle>Phone Wallpapers - Visual Studio Wallpapers</PageTitle>
+<HeadContent>
+    <meta property="og:image" content="wallpapers/phone/320x568/024.jpg">
+    <meta name="twitter:image" content="wallpapers/phone/320x568/024.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:image:alt" content="Phone wallpaper from Visual Studio wallpapers collection">
+    <meta name="twitter:image:alt" content="Phone wallpaper from Visual Studio wallpapers collection">
+</HeadContent>
+
+<h2>Phone Wallpapers</h2>
+
+@if (_images.Length > 0)
+{
+    <WallpaperGrid Images="_images"
+                   ThumbnailBasePath="wallpapers/phone/320x568"
+                   DeviceType="phone"
+                   AspectRatio="9:16"
+                   AriaLabel="Phone wallpapers grid"
+                   HintText="Click to preview"
+                   GridClass="phone-grid"
+                   OnImageClick="OnImageClicked" />
+}
+else
+{
+    <p>Loading wallpapers...</p>
+}
+
+<PreviewModal IsVisible="_showPreview"
+              OnClose="ClosePreview"
+              Images="_images"
+              CurrentIndex="_currentIndex"
+              CurrentIndexChanged="OnIndexChanged"
+              Sizes="@VisualStudioWallpapers.Data.WallpaperSizes.Phone"
+              DeviceType="phone"
+              BaseImagePath="wallpapers/phone"
+              PreviewSizePath="wallpapers/phone/430x932"
+              UseSizeSelector="true" />
+
+@code {
+    private string[] _images = [];
+    private bool _showPreview = false;
+    private int _currentIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var manifest = await ManifestService.GetManifestAsync();
+        _images = manifest.Phone;
+    }
+
+    private void OnImageClicked(int index)
+    {
+        _currentIndex = index;
+        _showPreview = true;
+    }
+
+    private void ClosePreview()
+    {
+        _showPreview = false;
+    }
+
+    private void OnIndexChanged(int newIndex)
+    {
+        _currentIndex = newIndex;
+    }
+}

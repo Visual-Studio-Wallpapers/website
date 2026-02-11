@@ -1,0 +1,75 @@
+.disclaimer {
+    background-color: #f8f9fa;
+    border-left: 4px solid #17a2b8;
+    padding: 1rem;
+    margin: 2rem 0;
+    border-radius: 4px;
+}
+
+.disclaimer a {
+    color: #17a2b8;
+    text-decoration: none;
+}
+
+.disclaimer a:hover {
+    text-decoration: underline;
+}
+
+.archive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.wallpaper-item {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+    outline: none;
+    overflow: hidden;
+}
+
+.wallpaper-item:hover {
+    transform: translateY(-5px);
+}
+
+.wallpaper-item:focus-visible {
+    outline: 3px solid var(--primary, #68217a);
+    outline-offset: 2px;
+}
+
+.image-container {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-content {
+    padding: 1rem;
+    text-align: center;
+}
+
+.hint {
+    color: #666;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wallpaper-item,
+    .wallpaper-item:hover {
+        transition: none;
+        transform: none;
+    }
+}

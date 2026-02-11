@@ -1,0 +1,50 @@
+<div class="grid wallpaper-grid @GridClass" id="wallpapers" role="list" aria-label="@AriaLabel">
+    @for (int i = 0; i < Images.Length; i++)
+    {
+        var index = i;
+        var image = Images[i];
+        <div class="card"
+             role="listitem"
+             tabindex="0"
+             @onclick="() => OnImageClick.InvokeAsync(index)"
+             @onkeydown="e => OnCardKeyDown(e, index)"
+             aria-label="@($"Preview wallpaper {System.IO.Path.GetFileNameWithoutExtension(image)}")">
+            <div class="image-container @AspectRatioClass">
+                <img src="@GetThumbnailUrl(image)"
+                     alt="@($"{DeviceType} wallpaper {System.IO.Path.GetFileNameWithoutExtension(image)}")"
+                     loading="lazy">
+            </div>
+            <div class="card-content">
+                <span class="hint" aria-hidden="true">@HintText</span>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string[] Images { get; set; } = [];
+    [Parameter] public string ThumbnailBasePath { get; set; } = "";
+    [Parameter] public string DeviceType { get; set; } = "desktop";
+    [Parameter] public string AspectRatio { get; set; } = "16:9";
+    [Parameter] public string AriaLabel { get; set; } = "Wallpapers grid";
+    [Parameter] public string HintText { get; set; } = "Press Enter or click to preview";
+    [Parameter] public string GridClass { get; set; } = "";
+    [Parameter] public EventCallback<int> OnImageClick { get; set; }
+
+    private string AspectRatioClass => AspectRatio switch
+    {
+        "9:16" => "aspect-phone",
+        "16:10" => "aspect-desktop-wide",
+        _ => "aspect-desktop"
+    };
+
+    private string GetThumbnailUrl(string image) => $"{ThumbnailBasePath}/{image}";
+
+    private async Task OnCardKeyDown(KeyboardEventArgs e, int index)
+    {
+        if (e.Key == "Enter" || e.Key == " ")
+        {
+            await OnImageClick.InvokeAsync(index);
+        }
+    }
+}

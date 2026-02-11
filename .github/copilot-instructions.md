@@ -1,33 +1,47 @@
 # Copilot instructions for `website`
 
 ## Project snapshot
-- This repo is a **Jekyll** site published on **GitHub Pages**.
-- Site-wide config lives in `_config.yml` (notably `baseurl: /visualstudio-wallpapers`).
-- Most pages are top-level HTML files with Jekyll front matter: `index.html`, `desktop.html`, `phone.html`, `watch.html`, `archive.html`.
-- Shared layout/CSS/JS is in `_layouts/default.html` (nav + theme toggle + a11y helpers like skip link/focus styles).
+- This repo is a **Blazor WebAssembly** standalone app targeting **.NET 10**, deployed to **GitHub Pages**.
+- Project file is `website.csproj` (namespace: `VisualStudioWallpapers`).
+- Pages are Blazor components in `Pages/`: `Index.razor`, `Desktop.razor`, `Phone.razor`, `Watch.razor`, `Archive.razor`, `SweepstakesRules.razor`.
+- Shared layout and components are in `Shared/`: `MainLayout.razor`, `PreviewModal.razor`, `WallpaperGrid.razor`, `Pagination.razor`.
 
 ## Local dev workflow
-- Ruby/Jekyll deps are in `Gemfile`.
-- Preferred local run is the VS Code task **“Serve Jekyll Site”** (`bundle exec jekyll serve`).
+- Run locally with `dotnet watch run`.
+- Build with `dotnet build`.
+- Publish with `dotnet publish -c Release -o release`.
 
 ## URL + asset conventions (important for GH Pages)
-- Use `{{ site.baseurl }}` when linking to pages/assets so paths work under the GitHub Pages subpath.
-	- Example: `{{ site.baseurl }}/wallpapers/desktop/thumbnails/022.jpg` (see `index.html`).
+- Static assets are in `wwwroot/` and referenced with relative paths from `<base href="/visualstudio-wallpapers/">`.
+- Wallpaper images: `wwwroot/wallpapers/{device}/{size}/{name}.jpg`.
+- Use relative paths in components (e.g., `wallpapers/desktop/thumbnails/022.jpg`).
 
 ## Wallpapers: file layout + naming
-- Assets are served from `wallpapers/`.
-- Desktop gallery renders from `wallpapers/desktop/thumbnails/*.jpg` (see `desktop.html`).
-	- Downloads assume a matching filename exists at `wallpapers/desktop/<size>/<same-name>.jpg`.
-- Phone gallery lists images from `wallpapers/phone/320x568/*.jpg` (see `phone.html`) and assumes the same filename exists in all phone size folders.
-- Watch gallery lists images from `wallpapers/watch/368x448/*.jpg` (see `watch.html`).
-- Community archive (`archive.html`) is JS-rendered with pagination; it expects `wallpapers/archive/###.jpg` and `wallpapers/archive/thumbnail/###.jpg` and uses a hard-coded `total_items` for page count.
-- Keep filenames **consistent across sizes** and prefer **zero-padded numeric names** (e.g. `024.jpg`) because pages sort by `basename`.
+- Assets are served from `wwwroot/wallpapers/`.
+- Desktop gallery uses thumbnails from `wwwroot/wallpapers/desktop/thumbnails/*.jpg`.
+  - Downloads use matching filenames at `wwwroot/wallpapers/desktop/{size}/{name}.jpg`.
+- Phone gallery lists from `wwwroot/wallpapers/phone/320x568/*.jpg`, same filename in all phone size folders.
+- Watch gallery lists from `wwwroot/wallpapers/watch/368x448/*.jpg`.
+- Community archive expects `wwwroot/wallpapers/archive/{###}.jpg` and `wwwroot/wallpapers/archive/thumbnail/{###}.jpg`.
+- Keep filenames **consistent across sizes** and prefer **zero-padded numeric names** (e.g., `024.jpg`).
 
 ## Device sizes source of truth
-- Download size buttons are generated from `_data/sizes.yml` via `site.data.sizes.<device>`.
-- If you add a new resolution folder, update `_data/sizes.yml` so UI download options match.
+- Download size options are defined in `Data/WallpaperSizes.cs`.
+- If you add a new resolution folder, update `WallpaperSizes.cs` so UI download options match.
+
+## Architecture patterns
+- **ThemeService** (`Services/ThemeService.cs`) manages VS Purple / VS Code Blue toggle via JS interop (`wwwroot/js/theme-interop.js`).
+- **PreviewModal** (`Shared/PreviewModal.razor`) is a reusable modal with image preview, download options, keyboard navigation, focus trapping.
+- **WallpaperGrid** (`Shared/WallpaperGrid.razor`) renders accessible wallpaper card grids.
+- **Pagination** (`Shared/Pagination.razor`) handles archive page pagination.
 
 ## SEO + accessibility patterns to preserve
-- Pages may set `social_image` and `social_image_alt` in front matter; layout uses `{% seo %}`.
-- Preserve keyboard accessibility patterns used in galleries/modals: Enter/Space handlers, focus trapping, and `prefers-reduced-motion` fallbacks.
-- Default to semantic HTML, descriptive link text, and meaningful `alt` attributes.
+- Use `<PageTitle>` and `<HeadContent>` for per-page titles and meta tags.
+- Preserve keyboard accessibility: Enter/Space handlers, focus trapping in modals, `prefers-reduced-motion` fallbacks.
+- Use semantic HTML, descriptive link text, and meaningful `alt` attributes.
+- All interactive elements must have ARIA labels and be keyboard-accessible.
+
+## Deployment
+- GitHub Actions workflow (`.github/workflows/deploy.yml`) builds and deploys to GitHub Pages.
+- The workflow publishes the app, adds `.nojekyll`, copies `index.html` to `404.html` for client-side routing.
+- Custom domain: `visualstudiowallpapers.com` (CNAME in wwwroot).

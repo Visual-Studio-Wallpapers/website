@@ -1,0 +1,81 @@
+.sweepstakes-rules {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+}
+
+.sweepstakes-rules h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.sweepstakes-rules h2 {
+    font-size: 1.4rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--text-secondary, #4a4a6a);
+}
+
+.sweepstakes-rules h3 {
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--primary, #68217a);
+}
+
+.sweepstakes-rules p {
+    margin-bottom: 1rem;
+}
+
+.sweepstakes-rules ol {
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+}
+
+.sweepstakes-rules li {
+    margin-bottom: 0.5rem;
+}
+
+.sweepstakes-rules table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.sweepstakes-rules th,
+.sweepstakes-rules td {
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.sweepstakes-rules th {
+    background-color: var(--primary, #68217a);
+    color: white;
+}
+
+.sweepstakes-rules tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.sweepstakes-rules a {
+    color: var(--primary, #68217a);
+    text-decoration: none;
+}
+
+.sweepstakes-rules a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .sweepstakes-rules table {
+        font-size: 0.8rem;
+    }
+
+    .sweepstakes-rules th,
+    .sweepstakes-rules td {
+        padding: 0.5rem;
+    }
+}

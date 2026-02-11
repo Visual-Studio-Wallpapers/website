@@ -1,0 +1,45 @@
+.pagination-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.page-info {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.page-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.page-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--primary, #68217a);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--primary, #68217a);
+    background: transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.page-button:hover {
+    background-color: var(--secondary, #8b2da2);
+    border-color: var(--secondary, #8b2da2);
+    color: white;
+}
+
+.page-button.current {
+    background: var(--primary, #68217a);
+    color: white;
+    border-color: var(--primary, #68217a);
+}

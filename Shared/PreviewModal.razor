@@ -1,0 +1,190 @@
+@inject IJSRuntime JSRuntime
+
+@if (IsVisible)
+{
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="previewModalTitle"
+         @onclick="OnBackdropClick" @onkeydown="OnKeyDown" tabindex="-1" @ref="_modalElement"
+         style="display:flex;">
+        <button class="nav-arrow prev-arrow" @onclick="PreviousImage" @onclick:stopPropagation="true"
+                aria-label="Show previous wallpaper (Left arrow key)">&lt;</button>
+        <button class="nav-arrow next-arrow" @onclick="NextImage" @onclick:stopPropagation="true"
+                aria-label="Show next wallpaper (Right arrow key)">&gt;</button>
+        <div class="modal-content preview-content" @onclick:stopPropagation="true">
+            <div class="preview-layout">
+                <div class="preview-image-container">
+                    <img id="previewImage" src="@PreviewImageUrl" alt="@PreviewImageAlt"
+                         aria-describedby="currentImageDesc">
+                    <p id="currentImageDesc" class="sr-only">@PreviewImageAlt</p>
+                </div>
+                <div class="preview-sidebar">
+                    <h3 id="previewModalTitle">Download Options</h3>
+                    @if (UseSizeSelector && Sizes.Length > 1)
+                    {
+                        <div class="preview-sizes" role="group" aria-label="Download size options">
+                            <select class="size-selector" @onchange="OnSizeChanged" aria-label="Select wallpaper size">
+                                @foreach (var size in Sizes)
+                                {
+                                    <option value="@size" selected="@(size == SelectedSize)">@size</option>
+                                }
+                            </select>
+                            <a href="@DownloadUrl" class="button download-button"
+                               target="@(OpenInNewWindow ? "_blank" : null)"
+                               download="@(OpenInNewWindow ? null : DownloadFileName)"
+                               role="button"
+                               aria-label="@($"Download {DeviceType} wallpaper in {SelectedSize}")">Download</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="size-buttons preview-sizes" role="group" aria-label="Download size options">
+                            @foreach (var size in Sizes)
+                            {
+                                <a href="@GetDownloadUrl(size)" class="button size-button"
+                                   target="@(OpenInNewWindow ? "_blank" : null)"
+                                   download="@(OpenInNewWindow ? null : GetDownloadFileName(size))"
+                                   role="button"
+                                   aria-label="@($"Download {DeviceType} wallpaper in {size}")">Download @size</a>
+                            }
+                        </div>
+                    }
+                    <div class="preview-settings">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked="@OpenInNewWindow"
+                                   @onchange="OnOpenInNewWindowChanged"
+                                   aria-describedby="openInNewWindowDesc">
+                            Open in new window
+                        </label>
+                        <span id="openInNewWindowDesc" class="sr-only">Choose whether to open downloads in a new window or download directly</span>
+                    </div>
+                    <button class="button close-button" @onclick="Close" aria-label="Close preview" @ref="_closeButtonElement">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string[] Images { get; set; } = [];
+    [Parameter] public int CurrentIndex { get; set; }
+    [Parameter] public EventCallback<int> CurrentIndexChanged { get; set; }
+    [Parameter] public string[] Sizes { get; set; } = [];
+    [Parameter] public string DeviceType { get; set; } = "desktop";
+    [Parameter] public string BaseImagePath { get; set; } = "";
+    [Parameter] public string PreviewSizePath { get; set; } = "";
+    [Parameter] public bool UseSizeSelector { get; set; } = false;
+    [Parameter] public string? SingleDownloadPath { get; set; }
+
+    private ElementReference _modalElement;
+    private ElementReference _closeButtonElement;
+    private bool _previousVisible;
+    private bool OpenInNewWindow { get; set; } = true;
+    private string SelectedSize { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var saved = await JSRuntime.InvokeAsync<string?>("localStorage.getItem", "openInNewWindow");
+        OpenInNewWindow = saved != "false";
+        if (Sizes.Length > 0)
+            SelectedSize = Sizes[0];
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IsVisible && Sizes.Length > 0 && string.IsNullOrEmpty(SelectedSize))
+            SelectedSize = Sizes[0];
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Focus the modal container when it becomes visible
+        if (IsVisible && !_previousVisible)
+        {
+            await _modalElement.FocusAsync();
+        }
+        _previousVisible = IsVisible;
+    }
+
+    private string CurrentImage => (Images.Length > 0 && CurrentIndex >= 0 && CurrentIndex < Images.Length)
+        ? Images[CurrentIndex] : "";
+
+    private string PreviewImageUrl => string.IsNullOrEmpty(SingleDownloadPath)
+        ? $"{PreviewSizePath}/{CurrentImage}"
+        : $"{SingleDownloadPath}/{CurrentImage}";
+
+    private string PreviewImageAlt => $"{DeviceType} wallpaper {System.IO.Path.GetFileNameWithoutExtension(CurrentImage)}";
+
+    private string DownloadUrl => GetDownloadUrl(SelectedSize);
+
+    private string DownloadFileName => GetDownloadFileName(SelectedSize);
+
+    private string GetDownloadUrl(string size)
+    {
+        if (!string.IsNullOrEmpty(SingleDownloadPath))
+            return $"{SingleDownloadPath}/{CurrentImage}";
+        return $"{BaseImagePath}/{size}/{CurrentImage}";
+    }
+
+    private string GetDownloadFileName(string size)
+    {
+        return $"{DeviceType}_{size}_{CurrentImage}";
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    private async Task OnBackdropClick()
+    {
+        await Close();
+    }
+
+    private async Task PreviousImage()
+    {
+        if (Images.Length == 0) return;
+        var newIndex = (CurrentIndex - 1 + Images.Length) % Images.Length;
+        await CurrentIndexChanged.InvokeAsync(newIndex);
+    }
+
+    private async Task NextImage()
+    {
+        if (Images.Length == 0) return;
+        var newIndex = (CurrentIndex + 1) % Images.Length;
+        await CurrentIndexChanged.InvokeAsync(newIndex);
+    }
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "Escape":
+                await Close();
+                break;
+            case "ArrowLeft":
+            case "a":
+                await PreviousImage();
+                break;
+            case "ArrowRight":
+            case "d":
+                await NextImage();
+                break;
+            case "Tab":
+                // Focus trap: cycle focus within the modal
+                await JSRuntime.InvokeVoidAsync("modalFocusTrap", e.ShiftKey);
+                break;
+        }
+    }
+
+    private async Task OnOpenInNewWindowChanged(ChangeEventArgs e)
+    {
+        OpenInNewWindow = (bool)(e.Value ?? true);
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "openInNewWindow", OpenInNewWindow.ToString().ToLower());
+    }
+
+    private void OnSizeChanged(ChangeEventArgs e)
+    {
+        SelectedSize = e.Value?.ToString() ?? Sizes[0];
+    }
+}

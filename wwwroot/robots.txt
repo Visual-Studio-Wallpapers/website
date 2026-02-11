@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://visualstudiowallpapers.com/sitemap.xml

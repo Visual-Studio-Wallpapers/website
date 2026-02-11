@@ -1,0 +1,134 @@
+@page "/archive"
+@inject VisualStudioWallpapers.Data.WallpaperManifestService ManifestService
+@inject NavigationManager Navigation
+
+<PageTitle>Community Archive - Visual Studio Wallpapers</PageTitle>
+
+<section aria-label="Community archive content">
+    <div class="disclaimer" role="note">
+        <p><strong>Disclaimer:</strong> These wallpapers come from the non-Microsoft affiliated
+        <a href="https://www.tumblr.com/vs2010wallpapers-blog" target="_blank" rel="noopener noreferrer">VS2010 Wallpapers Blog</a> run by Scott Hanselman.
+        This is an archived collection preserved for historical purposes.</p>
+    </div>
+
+    <div class="grid archive-grid" id="wallpaperGrid" role="list" aria-label="Archive wallpapers grid">
+        @foreach (var item in GetCurrentPageItems())
+        {
+            var paddedIndex = item.ToString("D3");
+            var itemIndex = item;
+            <div class="wallpaper-item"
+                 role="listitem"
+                 tabindex="0"
+                 @onclick="() => ShowPreview(itemIndex)"
+                 @onkeydown="e => OnItemKeyDown(e, itemIndex)"
+                 aria-label="@($"Archive Wallpaper {paddedIndex}")">
+                <div class="image-container">
+                    <img src="@($"wallpapers/archive/thumbnail/{paddedIndex}.jpg")"
+                         alt="@($"Archive Wallpaper {paddedIndex}")"
+                         loading="lazy">
+                </div>
+                <div class="card-content">
+                    <span class="hint" aria-hidden="true">Click to preview</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <Pagination CurrentPage="_currentPage"
+                TotalPages="_totalPages"
+                OnPageChanged="NavigateToPage"
+                AriaLabel="Wallpaper pages navigation" />
+
+    @if (_showPreview)
+    {
+        <PreviewModal IsVisible="_showPreview"
+                      OnClose="ClosePreview"
+                      Images="_allArchiveImages"
+                      CurrentIndex="_currentPreviewIndex"
+                      CurrentIndexChanged="OnPreviewIndexChanged"
+                      Sizes="@(new[] { "full" })"
+                      DeviceType="archive"
+                      SingleDownloadPath="wallpapers/archive"
+                      PreviewSizePath="wallpapers/archive" />
+    }
+</section>
+
+@code {
+    private int _totalItems = 137;
+    private const int ItemsPerPage = 30;
+    private int _currentPage = 1;
+    private int _totalPages;
+    private bool _showPreview = false;
+    private int _currentPreviewIndex = 0;
+    private string[] _allArchiveImages = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        var manifest = await ManifestService.GetManifestAsync();
+        _totalItems = manifest.ArchiveCount;
+        _totalPages = (int)Math.Ceiling((double)_totalItems / ItemsPerPage);
+
+        _allArchiveImages = Enumerable.Range(1, _totalItems)
+            .Select(i => $"{i:D3}.jpg")
+            .ToArray();
+
+        // Parse page from URL query string
+        var uri = new Uri(Navigation.Uri);
+        var queryString = uri.Query;
+        if (!string.IsNullOrEmpty(queryString))
+        {
+            var parts = queryString.TrimStart('?').Split('&');
+            foreach (var part in parts)
+            {
+                var kv = part.Split('=');
+                if (kv.Length == 2 && kv[0] == "page" && int.TryParse(kv[1], out var p))
+                {
+                    if (p >= 1 && p <= _totalPages)
+                        _currentPage = p;
+                }
+            }
+        }
+    }
+
+    private IEnumerable<int> GetCurrentPageItems()
+    {
+        int start = (_currentPage - 1) * ItemsPerPage + 1;
+        int end = Math.Min(start + ItemsPerPage - 1, _totalItems);
+        return Enumerable.Range(start, end - start + 1);
+    }
+
+    private void NavigateToPage(int page)
+    {
+        _currentPage = page;
+        var baseUri = Navigation.Uri.Split('?')[0];
+        Navigation.NavigateTo($"{baseUri}?page={page}", forceLoad: false);
+        StateHasChanged();
+    }
+
+    private void ShowPreview(int itemNumber)
+    {
+        _currentPreviewIndex = itemNumber - 1;
+        _showPreview = true;
+    }
+
+    private void ClosePreview()
+    {
+        _showPreview = false;
+    }
+
+    private void OnPreviewIndexChanged(int newIndex)
+    {
+        if (newIndex >= 0 && newIndex < _totalItems)
+        {
+            _currentPreviewIndex = newIndex;
+        }
+    }
+
+    private void OnItemKeyDown(KeyboardEventArgs e, int itemNumber)
+    {
+        if (e.Key == "Enter" || e.Key == " ")
+        {
+            ShowPreview(itemNumber);
+        }
+    }
+}
