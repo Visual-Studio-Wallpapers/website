@@ -419,3 +419,7 @@ _site/
 .jekyll-metadata
 vendor/
 .bundle/
+
+# Vite / React
+dist/
+*.local

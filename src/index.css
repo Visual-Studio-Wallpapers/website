@@ -1,0 +1,141 @@
+/* CSS Custom Properties — set by ThemeContext via JavaScript */
+:root {
+  --primary: #68217a;
+  --secondary: #8b2da2;
+  --background: #f0eaf3;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --card-bg: rgba(255, 255, 255, 0.92);
+  --text-primary: #1a1a2e;
+  --text-secondary: #4a4a6a;
+  --card-border: rgba(104, 33, 122, 0.08);
+  --card-border-hover: rgba(104, 33, 122, 0.18);
+  --primary-overlay: rgba(104, 33, 122, 0.85);
+  --primary-shadow: rgba(104, 33, 122, 0.3);
+  --primary-shadow-hover: rgba(104, 33, 122, 0.4);
+  --archive-border: rgba(104, 33, 122, 0.2);
+  --archive-hover-bg: rgba(104, 33, 122, 0.05);
+  --bg-end: #ddd5e8;
+  --disclaimer-bg: #f8f9fa;
+  --disclaimer-border: #17a2b8;
+  --disclaimer-link: #0b6f80;
+}
+
+/* Dark mode: prefers-color-scheme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-color-mode="light"]) {
+    --background: #1a1a2e;
+    --card-bg: rgba(30, 30, 50, 0.95);
+    --text-primary: #e8e8f0;
+    --text-secondary: #a0a0c0;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --card-border-hover: rgba(255, 255, 255, 0.2);
+    --bg-end: #12121f;
+    --disclaimer-bg: rgba(30, 30, 50, 0.8);
+    --disclaimer-border: #17a2b8;
+    --disclaimer-link: #5bc0de;
+  }
+}
+
+/* Dark mode: manual toggle */
+[data-color-mode="dark"] {
+  --background: #1a1a2e;
+  --card-bg: rgba(30, 30, 50, 0.95);
+  --text-primary: #e8e8f0;
+  --text-secondary: #a0a0c0;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.2);
+  --bg-end: #12121f;
+  --disclaimer-bg: rgba(30, 30, 50, 0.8);
+  --disclaimer-border: #17a2b8;
+  --disclaimer-link: #5bc0de;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  background: linear-gradient(135deg, var(--background) 0%, var(--bg-end) 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Focus management */
+*:focus-visible {
+  outline: 3px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Page headings — used in gallery pages */
+main h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+main h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

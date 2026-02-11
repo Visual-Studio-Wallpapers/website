@@ -1,0 +1,169 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg, #fff);
+  border-radius: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--card-border, rgba(0, 0, 0, 0.08));
+  color: var(--text-primary);
+}
+
+.imageSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 0;
+  padding: 1rem;
+}
+
+.previewImage {
+  max-width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+.navButton:first-child {
+  left: 0.5rem;
+}
+
+.navButton:last-of-type {
+  right: 0.5rem;
+}
+
+.navButton:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.navButton:focus-visible {
+  outline: 3px solid var(--primary, #0078d4);
+  outline-offset: 2px;
+}
+
+.sidebar {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.closeButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--primary, #68217a), var(--secondary, #8b2da2));
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: auto;
+  box-shadow: 0 4px 15px var(--primary-shadow);
+}
+
+.closeButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--primary-shadow-hover);
+}
+
+.closeButton:focus-visible {
+  outline: 3px solid var(--primary, #0078d4);
+  outline-offset: 2px;
+}
+
+/* ── Mobile adjustments (≤ 767px) ── */
+
+@media (max-width: 767px) {
+  .content {
+    max-width: 95vw;
+  }
+
+  .previewImage {
+    max-height: 400px;
+  }
+
+  .navButton {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+
+  .sidebar {
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ── Desktop layout (≥ 1024px) ── */
+
+@media (min-width: 1024px) {
+  .content {
+    flex-direction: row;
+  }
+
+  .previewImage {
+    max-height: 85vh;
+  }
+
+  .sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--card-border, rgba(0, 0, 0, 0.08));
+    padding: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navButton {
+    transition: none;
+  }
+
+  .closeButton {
+    transition: none;
+  }
+}

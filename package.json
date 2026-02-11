@@ -1,0 +1,40 @@
+{
+  "name": "website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "generate-manifest": "node scripts/generate-manifest.js",
+    "prebuild": "npm run generate-manifest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Visual-Studio-Wallpapers/website.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Visual-Studio-Wallpapers/website/issues"
+  },
+  "homepage": "https://github.com/Visual-Studio-Wallpapers/website#readme",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet-async": "^2.0.5",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.13.0",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.1.4",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

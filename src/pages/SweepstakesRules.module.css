@@ -1,0 +1,160 @@
+.rules {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  line-height: 1.7;
+}
+
+.rules h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+}
+
+.rules h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.rules h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.rules p {
+  margin-bottom: 1rem;
+  color: var(--text-secondary);
+}
+
+.rules ul,
+.rules ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.rules li {
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.rules a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.rules a:hover {
+  color: var(--secondary);
+}
+
+.rules a:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.tableWrapper:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.rules table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.rules th,
+.rules td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--glass-border, rgba(0, 0, 0, 0.1));
+  text-align: left;
+}
+
+.rules th {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+.rules tr:nth-child(even) {
+  background: var(--glass-bg, rgba(0, 0, 0, 0.03));
+}
+
+.rules blockquote {
+  border-left: 4px solid var(--primary);
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  background: var(--glass-bg, rgba(0, 0, 0, 0.02));
+  color: var(--text-secondary);
+}
+
+.rules hr {
+  border: none;
+  border-top: 1px solid var(--glass-border, rgba(0, 0, 0, 0.1));
+  margin: 2rem 0;
+}
+
+/* ── Table scroll wrapper ── */
+
+.tableWrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1.5rem;
+}
+
+.tableWrapper table {
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .rules {
+    padding: 1.5rem 1rem;
+  }
+
+  .rules h1 {
+    font-size: 1.5rem;
+  }
+
+  .rules h2 {
+    font-size: 1.25rem;
+  }
+
+  .rules h3 {
+    font-size: 1.1rem;
+  }
+
+  .rules table {
+    font-size: 0.85rem;
+    min-width: 500px;
+  }
+
+  .rules th,
+  .rules td {
+    padding: 0.5rem 0.625rem;
+  }
+
+  .rules ul,
+  .rules ol {
+    padding-left: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .rules {
+    padding: 1rem 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rules a {
+    transition: none;
+  }
+}

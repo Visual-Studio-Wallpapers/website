@@ -1,0 +1,7 @@
+export const sizes = {
+  desktop: ['1280x720', '1920x1080', '3440x1400', '3840x2160'],
+  phone: ['320x568', '360x640', '360x800', '390x844', '428x926', '430x932'],
+  watch: ['368x448'],
+} as const;
+
+export type DeviceType = keyof typeof sizes;
